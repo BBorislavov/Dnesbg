@@ -11,22 +11,22 @@ import javax.servlet.http.HttpServletResponse;
 import exceptions.ConnectionException;
 
 @WebServlet("/successfullRights")
-public class GiveRights extends HttpServlet {
+public class RemoveRights extends HttpServlet {
 	private static final long serialVersionUID = 1L;
   
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		String username = request.getParameter("username");
 
 		if (username == null) {
 			response.sendRedirect("./NotExist");
 		} else {
 			try {
-				DnesbgDAO.AdminDAO.giveRights("username");
+				DnesbgDAO.AdminDAO.removeRights("username");
 			} catch (ConnectionException e) {
 				e.printStackTrace();
 			}
-			response.sendRedirect("./successfullyGiveRights");
+			response.sendRedirect("./successfullyRemoveRights");
 		}
 	}
+
 }

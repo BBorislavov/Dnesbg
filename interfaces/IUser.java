@@ -1,7 +1,6 @@
 package interfaces;
 
 import exceptions.UserException;
-import model.User;
 
 public interface IUser {
 	

@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import exceptions.CommentException;
@@ -10,6 +11,7 @@ public class Comment {
 	private AtomicInteger commentId;
 	private int userId;
 	private int newsId;
+	private LocalDateTime date = LocalDateTime.now();
 
 	public Comment(String text) throws CommentException {
 		setText(text);
@@ -29,9 +31,9 @@ public class Comment {
 		}
 	}
 
-//	public int getCommentId() {
-//		return commentId.get();
-//	}
+	// public int getCommentId() {
+	// return commentId.get();
+	// }
 
 	public int getUserId() {
 		return userId;
@@ -55,6 +57,10 @@ public class Comment {
 		} else {
 			throw new CommentException("Invalid newsId");
 		}
+	}
+
+	public LocalDateTime getDate() {
+		return date;
 	}
 
 	private static boolean isValidString(String string) {
