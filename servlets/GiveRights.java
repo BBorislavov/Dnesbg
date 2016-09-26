@@ -24,9 +24,9 @@ public class GiveRights extends HttpServlet {
 			try {
 				DnesbgDAO.AdminDAO.giveRights("username");
 			} catch (ConnectionException e) {
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
-			response.sendRedirect("./successfullyGiveRights");
+			request.getRequestDispatcher("/WEB-INF/jsp/successfullyGiveRights.jsp").forward(request, response);
 		}
 	}
 }

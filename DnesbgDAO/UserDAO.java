@@ -4,9 +4,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import exceptions.CommentException;
 import exceptions.ConnectionException;
+import exceptions.NewsException;
+import exceptions.UserException;
 import interfaces.IUser;
+import model.Category;
 
 public class UserDAO {
 	
@@ -21,17 +27,18 @@ public class UserDAO {
 	private static final String DELETE_COMMENT = "DELETE FROM news_db.users"
 													+ "WHERE News_id=?"
 													+ "AND User_id=?"
-													+ "AND text='?'"
-													+ "AND date='?';";
+													+ "AND text='?';";
 	
-	private static final String SHOW_NEWS_FROM_CATEGORY = "SELECT title FROM news_db.news n"
+	private static final String SHOW_NEWS_FROM_SUBCATEGORY = "SELECT p.url, n.title FROM news_db.news n"
 													+ "JOIN news_db.news_has_categories nc"
 													+ "ON (n.id=nc.news_id)"
 													+ "JOIN news_db.categories c"
 													+ "ON (nc.subcategory_id = c.category_id)"
+													+ "JOIN (news_db.photos p)"
+													+ "ON (n.id=p.news_id)"
 													+ "AND c.name='?';";
 	
-	public static void registerUser(IUser user) throws ConnectionException {
+	public static void registerUser(IUser user) throws ConnectionException, UserException {
 		
 		Connection connection = DBConnection.getInstance().getConnection();
 		try {
@@ -44,11 +51,11 @@ public class UserDAO {
 			statement.executeUpdate();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new UserException("Registration failed. Try again.");
 		} 
 	}
 	
-	public static boolean isUserExisting(String username, String password) throws ConnectionException {
+	public static boolean isUserExisting(String username, String password) throws ConnectionException, UserException {
 		
 		Connection connection = DBConnection.getInstance().getConnection();
 		try {
@@ -56,68 +63,75 @@ public class UserDAO {
 			statement.setString(1, username);
 			statement.setString(2, password);
 
-			ResultSet rs = statement.executeQuery();
-			rs.next();
-			if (rs.getInt("count") == 0) {
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			if (resultSet.getInt("count") == 0) {
 				System.out.println("User does not exist");
 				return false;
 			}
 			return true;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new UserException("Failed check user existing. Try again.");
 		}
-		return false;
 	}
 	
-	public static void addComment(int newsId,int userId,String text,LocalDateTime date) throws ConnectionException{
+	public static void addComment(int newsId,int userId,String text) throws ConnectionException, UserException{
 		
 		Connection connection = DBConnection.getInstance().getConnection();
-		String DateTimeToString = date.toString();
+		String currentTime =LocalDateTime.now().toString();
 		
 		try {
 			PreparedStatement statement = connection.prepareStatement(ADD_COMMENT);
 			statement.setInt(1, newsId);
 			statement.setInt(2, userId);
 			statement.setString(3, text);
-			statement.setString(4, DateTimeToString);
+			statement.setString(4, currentTime);
 			statement.executeUpdate();
-
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new UserException("Failed to add comment.");
 		} 
 	}
 	
-	public static void removeComment(int newsId,int userId,String text,LocalDateTime date) throws ConnectionException{
+	public static void removeComment(int newsId,int userId,String text) throws ConnectionException, CommentException{
 		
 		Connection connection = DBConnection.getInstance().getConnection();
-		String DateTimeToString = date.toString();
-		
+
 		try {
 			PreparedStatement statement = connection.prepareStatement(DELETE_COMMENT);
 			statement.setInt(1, newsId);
 			statement.setInt(2, userId);
 			statement.setString(3, text);
-			statement.setString(4, DateTimeToString);
 			statement.executeUpdate();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new CommentException("Failed to remove comment.");
 		} 
 	}
 	
-	public static void showNewsInSubcategory(String subcategoryName) throws ConnectionException{
+	public static void showNewsInSubcategory(String subcategoryName) throws ConnectionException, NewsException{
 		
 		Connection connection = DBConnection.getInstance().getConnection();
 		
 		try {
-			PreparedStatement statement = connection.prepareStatement(SHOW_NEWS_FROM_CATEGORY);
+			PreparedStatement statement = connection.prepareStatement(SHOW_NEWS_FROM_SUBCATEGORY);
 			
 			statement.setString(1, subcategoryName);
-			statement.executeUpdate();
 
+			ResultSet resultSet = statement.executeQuery();
+			
+			List<String> newsFromCategory = new ArrayList<String>();
+			
+			while(resultSet.next()){
+				
+				String url = resultSet.getString("p.url");
+				String title = resultSet.getString("t.title");
+				//jsp.... !!!!
+			}
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new NewsException("Failed to show news.");
 		} 
 	}
 	
