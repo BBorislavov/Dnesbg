@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import exceptions.CommentException;
@@ -13,6 +14,7 @@ import exceptions.NewsException;
 import exceptions.UserException;
 import interfaces.IUser;
 import model.Category;
+import model.News;
 import validators.EmailVaildator;
 import validators.PasswordVaildator;
 import validators.UserNameVaildator;
@@ -25,15 +27,15 @@ public class UserDAO {
 
 	private static final String CHECK_IS_ADMIN = "SELECT is_admin FROM news_db.users WHERE username = ?;";
 
-	private static final String ADD_COMMENT = "INSERT INTO news_db.comments" + "VALUES(null,?,?,?,?);";
+	private static final String ADD_COMMENT = "INSERT INTO news_db.comments " + "VALUES(null,?,?,?,?);";
 
-	private static final String DELETE_COMMENT = "DELETE FROM news_db.users" + "WHERE News_id=?" + "AND User_id=?"
-			+ "AND text='?';";
+	private static final String DELETE_COMMENT = "DELETE FROM news_db.comments " + "WHERE News_id=?" + " AND User_id=?"
+			+ " AND text=?;";
 
-	private static final String SHOW_NEWS_FROM_SUBCATEGORY = "SELECT p.url, n.title FROM news_db.news n"
-			+ "JOIN news_db.news_has_categories nc" + "ON (n.id=nc.news_id)" + "JOIN news_db.categories c"
-			+ "ON (nc.subcategory_id = c.category_id)" + "JOIN (news_db.photos p)" + "ON (n.id=p.news_id)"
-			+ "AND c.name='?';";
+	private static final String SHOW_NEWS_FROM_SUBCATEGORY = "SELECT p.url, n.title, n.date FROM news_db.news n"
+			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
+			+ " ON (nc.subcategory_id = c.subcategory_id)" + " LEFT OUTER JOIN (news_db.photos p)" + " ON (n.id=p.news_id)"
+			+ " AND c.name=?;";
 
 	public static void registerUser(IUser user) throws ConnectionException, UserException {
 
@@ -58,7 +60,7 @@ public class UserDAO {
 			statement.executeUpdate();
 
 		} catch (Exception e) {
-			throw new UserException("Registration failed. Try again.");
+			throw new UserException("Registration failed. Try again.", e);
 		}
 	}
 
@@ -67,26 +69,21 @@ public class UserDAO {
 		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 
-			System.out.println("1");
 			PreparedStatement statement = connection.prepareStatement(CHECK_USER_EXISTING);
 			statement.setString(1, username);
 			statement.setString(2, password);
-			System.out.println("2");
 			ResultSet resultSet = statement.executeQuery();
-			System.out.println("3");
 			resultSet.next();
 			int isExisting = resultSet.getInt("COUNT(*)");
-			System.out.println("4");
 			if (isExisting == 0) {
 				System.out.println("User does not exist");
 				return false;
 
 			}
-			System.out.println("5");
 			return true;
 
 		} catch (Exception e) {
-			throw new UserException("Failed check user existing. Try again.");
+			throw new UserException("Failed check user existing. Try again.", e);
 		}
 	}
 
@@ -106,7 +103,7 @@ public class UserDAO {
 			return true;
 
 		} catch (Exception e) {
-			throw new UserException("Failed check user rights.");
+			throw new UserException("Failed check user rights.", e);
 		}
 	}
 
@@ -116,15 +113,17 @@ public class UserDAO {
 		String currentTime = LocalDateTime.now().toString();
 
 		try {
+			System.out.println("1");
 			PreparedStatement statement = connection.prepareStatement(ADD_COMMENT);
 			statement.setInt(1, newsId);
 			statement.setInt(2, userId);
 			statement.setString(3, text);
 			statement.setString(4, currentTime);
+			System.out.println("2");
 			statement.executeUpdate();
-
+			System.out.println("3");
 		} catch (Exception e) {
-			throw new UserException("Failed to add comment.");
+			throw new UserException("Failed to add comment.", e);
 		}
 	}
 
@@ -140,35 +139,33 @@ public class UserDAO {
 			statement.executeUpdate();
 
 		} catch (Exception e) {
-			throw new CommentException("Failed to remove comment.");
+			throw new CommentException("Failed to remove comment.", e);
 		}
 	}
 
-	public static void showNewsInSubcategory(String subcategoryName) throws ConnectionException, NewsException {
+	public static List<News> showNewsInSubcategory(String subcategoryName) throws ConnectionException, NewsException {
 
 		Connection connection = DBConnection.getInstance().getConnection();
 
 		try {
 			PreparedStatement statement = connection.prepareStatement(SHOW_NEWS_FROM_SUBCATEGORY);
-
 			statement.setString(1, subcategoryName);
-
 			ResultSet resultSet = statement.executeQuery();
-
-			List<String> titles = new ArrayList<String>();
-			List<String> urls = new ArrayList<String>();
-
+			List<News> newsInSubcategory = new ArrayList<News>();
 			while (resultSet.next()) {
 
 				String url = resultSet.getString("p.url");
-				String title = resultSet.getString("t.title");
-				titles.add(title);
-				urls.add(url);
-				// jsp.... !!!!
+				System.out.println(url);
+				String title = resultSet.getString("n.title");
+				System.out.println(title);
+				String date = resultSet.getString("n.date");
+				System.out.println(date);
+				News news = new News(subcategoryName, "show full news", url);
+				newsInSubcategory.add(news);
 			}
-
+			return Collections.unmodifiableList(newsInSubcategory);
 		} catch (Exception e) {
-			throw new NewsException("Failed to show news.");
+			throw new NewsException("Failed to show news.", e);
 		}
 	}
 

@@ -9,24 +9,26 @@ public class News {
 	private AtomicInteger newsId;
 	private String title;
 	private String text;
-	private final LocalDateTime dateOfPost = LocalDateTime.now();
+	private String photoUrl;
+	private LocalDateTime dateOfPost = LocalDateTime.now();
 
-	public News(String title, String text) throws NewsException {
+	public News(String title, String text, String photoUrl) throws NewsException {
 		setTitle(title);
 		setText(text);
+		setPhotoUrl(photoUrl);
 	}
 
-//	public int getNewsId() {
-//		return newsId.get();
-//	}
-//
-//	public void setNewsId(int newsId) throws NewsException {
-//		if (newsId > 0) {
-//			this.newsId.getAndSet(newsId);
-//		} else {
-//			throw new NewsException("Invalid news id");
-//		}
-//	}
+	// public int getNewsId() {
+	// return newsId.get();
+	// }
+	//
+	// public void setNewsId(int newsId) throws NewsException {
+	// if (newsId > 0) {
+	// this.newsId.getAndSet(newsId);
+	// } else {
+	// throw new NewsException("Invalid news id");
+	// }
+	// }
 
 	public String getTitle() {
 		return title;
@@ -45,8 +47,8 @@ public class News {
 	}
 
 	public void setText(String text) throws NewsException {
-		if (isValidString(text)){
-		this.text = text;
+		if (isValidString(text)) {
+			this.text = text;
 		} else {
 			throw new NewsException("Invalid text");
 		}
@@ -54,6 +56,18 @@ public class News {
 
 	public LocalDateTime getDateOfPost() {
 		return dateOfPost;
+	}
+
+	public void setDateOfPost(LocalDateTime dateOfPost) {
+		this.dateOfPost = dateOfPost;
+	}
+
+	public String getPhotoUrl() {
+		return photoUrl;
+	}
+
+	private void setPhotoUrl(String photoUrl) {
+		this.photoUrl = photoUrl;
 	}
 
 	private static boolean isValidString(String string) {
