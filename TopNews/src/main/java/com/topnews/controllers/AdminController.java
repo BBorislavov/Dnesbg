@@ -18,7 +18,7 @@ import com.topnews.modelsDAO.UserDAO;
 
 @Controller
 public class AdminController {
-
+	
 	@RequestMapping(value = "/AdminPanel", method = RequestMethod.GET)
 	public String showNewsInCategory(Model model, HttpSession httpSession, HttpServletRequest req) {
 		try {
@@ -33,10 +33,17 @@ public class AdminController {
 			return "forward:/Login";
 		}
 	}
+<<<<<<< HEAD
 
 	@RequestMapping(value = "/Category", method = RequestMethod.GET)
 	public String showNewsInCategory(@ModelAttribute("name") String name, Model model, HttpSession httpSession,
 			HttpServletRequest req) {
+=======
+	
+	
+	@RequestMapping(value = "/Category", method = RequestMethod.GET)
+	public String showNewsInCategory(@ModelAttribute("name") String name, Model model, HttpSession httpSession, HttpServletRequest req) {
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 		try {
 			if (UserDAO.isAdmin((User) httpSession.getAttribute("user"))) {
 				model.addAttribute("name", name);
@@ -45,6 +52,7 @@ public class AdminController {
 				return "ShowCategory";
 			} else {
 				return "redirect:/pages/404.html";
+<<<<<<< HEAD
 			}
 
 		} catch (Exception e) {
@@ -101,10 +109,55 @@ public class AdminController {
 		} catch (Exception e) {
 			return "forward:/Login";
 		}
+=======
+			}
+
+		} catch (Exception e) {
+			return "forward:/Login";
+		}
+	}
+	
+	
+	
+
+	@RequestMapping(value = "/AddNews", method = RequestMethod.POST)
+	public String AddNews(@ModelAttribute News news, String category, HttpSession httpSession) {
+		try {
+			if (UserDAO.isAdmin((User) httpSession.getAttribute("user"))) {
+				AdminDAO.addNews(news, category);
+				return "SuccessAddNews";
+			}
+		} catch (Exception e) {
+			return "forward:/Login";
+		} 
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 
 		return "redirect:404.html";
 	}
 
+<<<<<<< HEAD
+=======
+	@RequestMapping(value = "/AddNews", method = RequestMethod.GET)
+	public String showLoggedToAdd(Model model) {
+		model.addAttribute(new News());
+		return "AddNews";
+	}
+	
+	@RequestMapping(value = "/DeleteNews", method = RequestMethod.POST)
+	public String deleteNews(@ModelAttribute News news, HttpSession httpSession) {
+		try {
+			if (UserDAO.isAdmin((User) httpSession.getAttribute("user"))) {
+				AdminDAO.deleteNews(news.getId());
+				return "deleteNews";
+			}
+		} catch (Exception e) {
+			return "forward:/Login";
+		} 
+
+		return "redirect:404.html";
+	}
+
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 	@RequestMapping(value = "/DeleteNews", method = RequestMethod.GET)
 	public String showLoggedToDelete(Model model) {
 		model.addAttribute(new News());

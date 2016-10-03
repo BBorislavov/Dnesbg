@@ -11,10 +11,14 @@ public class News {
 	private String text;
 	private String photoUrl;
 	private String category;
+<<<<<<< HEAD
 	private String dateOfPost;
 	
 	public News() {
 	}
+=======
+	private LocalDateTime dateOfPost = LocalDateTime.now();
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 
 	
 	
@@ -30,6 +34,13 @@ public class News {
 		return id;
 	}
 
+<<<<<<< HEAD
+=======
+	public int getId() {
+		return id;
+	}
+
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 	public void setId(int id) throws NewsException {
 		if (id > 0) {
 			this.id=id;
@@ -37,6 +48,12 @@ public class News {
 			throw new NewsException("Invalid news id");
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	public News() {
+	}
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 
 	public String getTitle() {
 		return title;

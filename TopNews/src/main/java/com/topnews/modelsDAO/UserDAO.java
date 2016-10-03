@@ -37,11 +37,14 @@ public class UserDAO {
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " LEFT OUTER JOIN (news_db.photos p)" + " ON (n.id=p.news_id)"
 			+ " WHERE c.name=?;";
 
+<<<<<<< HEAD
 	private static final String SHOW_CURRENT_NEWS = "SELECT p.url, n.title, n.text, n.date FROM news_db.news n"
 			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " LEFT OUTER JOIN (news_db.photos p)" + " ON (n.id=p.news_id)"
 			+ " WHERE n.id=?;";
 
+=======
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 	public static boolean registerUser(IUser user) throws ConnectionException, UserException {
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -156,8 +159,13 @@ public class UserDAO {
 				String url = resultSet.getString("p.url");
 				String title = resultSet.getString("n.title");
 				String date = resultSet.getString("n.date");
+<<<<<<< HEAD
 				int id = resultSet.getInt("n.id");
 				News news = new News(title, "show full news", url, date, id);
+=======
+				System.out.println(date);
+				News news = new News(title, "show full news", url);
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 				newsInSubcategory.add(news);
 			}
 			return Collections.unmodifiableList(newsInSubcategory);

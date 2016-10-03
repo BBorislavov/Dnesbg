@@ -16,7 +16,20 @@
 </div>
 <a class="scrollToTop" href="#"><i class="fa fa-angle-up"></i></a>
 <div class="container">
+<<<<<<< HEAD
  <jsp:include page="admin_panel/header.jsp"></jsp:include>
+=======
+  <header id="header">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="header_bottom">
+          <div class="logo_area"><a href="/Home" class="logo"><img src="images/logo.jpg" alt=""></a></div>
+          <div class="add_banner"><a href="#"><img src="images/banners-news.jpg" alt=""></a></div>
+        </div>
+      </div>
+    </div>
+  </header>
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
  <jsp:include page="admin_panel/navigation.jsp"></jsp:include>
    <section id="contentSection">
     <div class="row">

@@ -16,6 +16,7 @@
 </div>
 <a class="scrollToTop" href="#"><i class="fa fa-angle-up"></i></a>
 <div class="container">
+<<<<<<< HEAD
  <jsp:include page="admin_panel/header.jsp"></jsp:include>
  <jsp:include page="admin_panel/navigation.jsp"></jsp:include>
  <h1>All news for ${name} category</h1>
@@ -24,11 +25,32 @@
  <c:forEach var="listCategory" items="${news}">
  <li><img height="50" width="50" src="${listCategory.photoUrl}"></li>
  <li><a href="./News?category=${name}&id=${listCategory.id}">${listCategory.title}</a></li>
+=======
+  <header id="header">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="header_bottom">
+          <div class="logo_area"><a href="/Home" class="logo"><img src="./images/logo.jpg" alt=""></a></div>
+          <div class="add_banner"><a href="#"><img src="./images/banners-news.jpg" alt=""></a></div>
+        </div>
+      </div>
+    </div>
+  </header>
+ <jsp:include page="admin_panel/navigation.jsp"></jsp:include>
+ <h1>All news for ${name} category</h1>
+ <ul>
+ <c:forEach var="listCategory" items="${news}">
+ <li><img height="50" width="50" src="${listCategory.photoUrl}"></li>
+ <li>${listCategory.title}</li>
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
  <li>${listCategory.dateOfPost}</li>
  </br>
   </c:forEach>
  </ul>
+<<<<<<< HEAD
  </div>
+=======
+>>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
  <jsp:include page="admin_panel/footer.jsp"></jsp:include>
 </div>
 <script src="./assets/js/jquery.min.js"></script>
