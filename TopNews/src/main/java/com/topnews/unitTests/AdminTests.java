@@ -43,11 +43,6 @@ public class AdminTests {
 //		AdminDAO.removeSubcategory("����������");
 //	}
 	
-	@Test
-	public void addNews() throws ConnectionException, UserException, NewsException{
-		AdminDAO.addNews(new News("��������", "����� �����", "http://novavarna.net/wp-content/uploads/2015/03/11004572_10153723979534546_6475081640795663185_o-Small.jpg"), "������");
-	}
-	
 	
 	
 }
