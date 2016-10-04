@@ -35,9 +35,9 @@ public class UserDAO {
 	private static final String SHOW_NEWS_FROM_SUBCATEGORY = "SELECT p.url, n.title, n.date FROM news_db.news n"
 			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " LEFT OUTER JOIN (news_db.photos p)" + " ON (n.id=p.news_id)"
-			+ " AND c.name=?;";
+			+ " WHERE c.name=?;";
 
-	public static void registerUser(IUser user) throws ConnectionException, UserException {
+	public static boolean registerUser(IUser user) throws ConnectionException, UserException {
 
 		Connection connection = DBConnection.getInstance().getConnection();
 		try {
@@ -58,7 +58,7 @@ public class UserDAO {
 				throw new UserException("Invalid email");
 			}
 			statement.executeUpdate();
-
+			return true;
 		} catch (Exception e) {
 			throw new UserException("Registration failed. Try again.", e);
 		}
@@ -159,7 +159,7 @@ public class UserDAO {
 				System.out.println(title);
 				String date = resultSet.getString("n.date");
 				System.out.println(date);
-				News news = new News(subcategoryName, "show full news", url);
+				News news = new News(title, "show full news", url);
 				newsInSubcategory.add(news);
 			}
 			return Collections.unmodifiableList(newsInSubcategory);

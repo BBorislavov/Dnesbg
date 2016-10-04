@@ -12,31 +12,32 @@ import com.topnews.models.User;
 import com.topnews.modelsDAO.UserDAO;
 
 @Controller
-public class LoginController {
+@RequestMapping("/Register")
+public class RegisterController {
 
-	@RequestMapping(value = "/Login", method = RequestMethod.POST)
-	public String login(@ModelAttribute User user, Model model, HttpSession httpSession) {
+	@RequestMapping(method = RequestMethod.POST)
+	public String register(@ModelAttribute User user, Model model, HttpSession httpSession) {
 		try {
 			if (UserDAO.isUserExisting(user)) {
-				httpSession.setAttribute("user", user);
-				if (UserDAO.isAdmin(user)) {
-					return "redirect:/AdminPanel";
-				} else {
+				model.addAttribute("message", "This account already exists");
+				return "register";
+			} else {
+				if (UserDAO.registerUser(user)) {
+					httpSession.setAttribute("user", user);
 					return "LoginSuccess";
 				}
 			}
-			model.addAttribute("message", "Invalid username or password");
-			return "login";
+			model.addAttribute("message", "Invalid register");
+			return "register";
 		} catch (Exception e) {
-			model.addAttribute("message", "Invalid username or password");
-			return "login";
+			model.addAttribute("message", "Invalid register");
+			return "register";
 		}
 	}
 
-	@RequestMapping(value = "/Login", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public String showLogged(Model model) {
 		model.addAttribute(new User());
-		return "login";
+		return "register";
 	}
-
 }

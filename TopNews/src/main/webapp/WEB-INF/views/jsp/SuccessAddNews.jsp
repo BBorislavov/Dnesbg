@@ -1,13 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>   
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <jsp:include page="admin_panel/panel_style.jsp"></jsp:include>
-<title>Admin panel</title>
+<title>Add News</title>
 </head>
 <body>
 <div id="preloader">
@@ -26,8 +27,28 @@
     </div>
   </header>
  <jsp:include page="admin_panel/navigation.jsp"></jsp:include>
-  <h3>Welcome, ${user.username}.</h1>
-  
+   <section id="contentSection">
+    <div class="row">
+      <div class="col-lg-7 col-md-7 col-sm-7">
+        <div class="left_content">
+          <div class="contact_area">
+            <h2>Add News</h2>
+            <h4 style="color: red;">Successfully added news</h4>
+            <br/>
+            <form:form action="AddNews" class="contact_form" commandName="news">
+            <form:input path="category" class="form-control" type="text" placeholder="Category*"/>
+            <form:input path="title" class="form-control" type="text" placeholder="Title*"/>
+              <h4>Photo upload</h4>
+            <form:input path="photoUrl" class="form-control" type="file" accept="image/*"/>
+              <br/>
+            <form:textarea path="text" class="form-control" name="text" cols="30" rows="10" placeholder="Text*"/></textarea>
+              <input type="submit" value="Add to Site">
+            </form:form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
  <jsp:include page="admin_panel/footer.jsp"></jsp:include>
 </div>
 <script src="assets/js/jquery.min.js"></script>

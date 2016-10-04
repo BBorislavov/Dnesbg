@@ -6,10 +6,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.topnews.exceptions.NewsException;
 
 public class News {
-	private AtomicInteger newsId;
+	private int id;
 	private String title;
 	private String text;
 	private String photoUrl;
+	private String category;
 	private LocalDateTime dateOfPost = LocalDateTime.now();
 
 	public News(String title, String text, String photoUrl) throws NewsException {
@@ -18,17 +19,20 @@ public class News {
 		setPhotoUrl(photoUrl);
 	}
 
-	// public int getNewsId() {
-	// return newsId.get();
-	// }
-	//
-	// public void setNewsId(int newsId) throws NewsException {
-	// if (newsId > 0) {
-	// this.newsId.getAndSet(newsId);
-	// } else {
-	// throw new NewsException("Invalid news id");
-	// }
-	// }
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) throws NewsException {
+		if (id > 0) {
+			this.id=id;
+		} else {
+			throw new NewsException("Invalid news id");
+		}
+	}
+
+	public News() {
+	}
 
 	public String getTitle() {
 		return title;
@@ -70,12 +74,12 @@ public class News {
 		this.photoUrl = photoUrl;
 	}
 
-	public AtomicInteger getNewsId() {
-		return newsId;
+	public String getCategory() {
+		return category;
 	}
 
-	public void setNewsId(AtomicInteger newsId) {
-		this.newsId = newsId;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	private static boolean isValidString(String string) {

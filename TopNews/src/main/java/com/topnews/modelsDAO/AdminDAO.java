@@ -36,6 +36,11 @@ private static final String REMOVE_RIGHTS_TO_USER = "UPDATE news_db.users SET is
 private static final String DELETE_USER = "DELETE FROM news_db.users" 
 													+ " WHERE username=?;";
 
+private static final String DELETE_PHOTO = "DELETE FROM news_db.photos WHERE news_id = ?;";
+
+private static final String	DELETE_NEWS_FROM_CATEGORY = "DELETE FROM news_db.news_has_categories WHERE news_id = ?;";
+
+private static final String	DELETE_NEWS = "DELETE FROM news_db.news WHERE id = ?;";
 
 	
 	
@@ -142,8 +147,26 @@ private static final String DELETE_USER = "DELETE FROM news_db.users"
 		} catch (SQLException e) {
 			throw new UserException("Failed to add news" , e);
 		}
-		
-		
 	}
 	
+	public static void deleteNews(int id) throws ConnectionException, UserException{
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement photoStatement = connection.prepareStatement(DELETE_PHOTO);
+			photoStatement.setInt(1, id);
+			photoStatement.executeUpdate();
+			
+			PreparedStatement categoryStatement = connection.prepareStatement(DELETE_NEWS_FROM_CATEGORY);
+			categoryStatement.setInt(1, id);
+			categoryStatement.executeUpdate();
+			
+			PreparedStatement newsStatement = connection.prepareStatement(DELETE_NEWS);
+			newsStatement.setInt(1, id);
+			newsStatement.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw new UserException("Failed to delete news" , e);
+		}
+	}
 }

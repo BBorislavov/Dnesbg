@@ -1,20 +1,12 @@
 package com.topnews.models;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.topnews.exceptions.UserException;
 import com.topnews.interfaces.IUser;
 
-public class User implements IUser{
+public class User implements IUser {
 
-	private AtomicInteger userId;
+	private int userId;
 	private String username;
-	@NotEmpty(message = "Please enter your password.")
-    @Size(min = 6, max = 15, message = "Your password must between 6 and 15 characters")
 	private String password;
 	private String email;
 	private boolean isAdmin;
@@ -26,12 +18,12 @@ public class User implements IUser{
 	}
 
 	public int getUserId() {
-		return userId.get();
+		return userId;
 	}
 
 	public void setUserId(int userId) throws UserException {
 		if (userId > 0) {
-			this.userId.getAndSet(userId);
+			this.userId = userId;
 		} else {
 			throw new UserException("Invalid user id");
 		}
@@ -45,7 +37,8 @@ public class User implements IUser{
 	}
 
 	public void setPassword(String password) {
-			this.password = password;
+		if (isValidString(password))
+		this.password = password;
 	}
 
 	public String getEmail() {
@@ -71,14 +64,12 @@ public class User implements IUser{
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public void setUsername(String username) throws UserException {
-		if (isValidString(username)){
+		if (isValidString(username)) {
 			this.username = username;
-		} else {
-			throw new UserException("Invalid username");
-		}
-		
+		} 
+
 	}
 
 	private static boolean isValidString(String string) {
@@ -88,6 +79,5 @@ public class User implements IUser{
 	public void giveRights(String name) throws UserException {
 		throw new UserException("You have no rights to set admin");
 	}
-	
 
 }
