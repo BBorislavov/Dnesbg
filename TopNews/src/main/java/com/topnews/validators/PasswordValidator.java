@@ -3,7 +3,7 @@ package com.topnews.validators;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PasswordVaildator {
+public class PasswordValidator {
 	private Pattern pattern;
 	private Matcher matcher;
 	private static final String PASSWORD_PATTERN = "(?=.*[0-9])" // must have at least one digit
@@ -12,7 +12,7 @@ public class PasswordVaildator {
 												 + "(?=\\S+$)"	 // no spaces allowed
 												 + ".{6,15}";	 // must be between 6 and 15 chars
 
-	public PasswordVaildator() {
+	public PasswordValidator() {
 		pattern = Pattern.compile(PASSWORD_PATTERN);
 	}
 
