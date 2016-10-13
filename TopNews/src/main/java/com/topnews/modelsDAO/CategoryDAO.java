@@ -1,6 +1,5 @@
 package com.topnews.modelsDAO;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +14,7 @@ import com.topnews.exceptions.ConnectionException;
 import com.topnews.exceptions.NewsException;
 import com.topnews.exceptions.UserException;
 
-public class CategoryDAO {
+public class CategoryDAO extends AbstractDAO {
 
 	static final String GET_CATEGORY_ID = "SELECT subcategory_id FROM news_db.categories WHERE name = ?;";
 	static final String SHOW_CATEGORIES = "SELECT categories.name FROM categories ORDER BY category_id;";
@@ -25,15 +24,14 @@ public class CategoryDAO {
 	private static final String GET_MAIN_CATEGORIES = "SELECT name FROM news_db.categories WHERE category_id is null AND subcategory_id <> 1 ORDER BY subcategory_id;";
 	private static final String DELETE_CATEGORY = "DELETE FROM news_db.categories WHERE subcategory_id=?;";
 	private static final String INSERT_CATEGORY = "INSERT INTO news_db.categories VALUES (? , null , ?);";
-	
+
 	public static void addCategory(String category, String subcategory) throws ConnectionException, UserException {
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement selectStatement = connection.prepareStatement(GET_CATEGORY_ID);
-			if(!subcategory.trim().isEmpty()){
-			selectStatement.setString(1, category);
+			if (!subcategory.trim().isEmpty()) {
+				selectStatement.setString(1, category);
 			} else {
-			throw new CategoryException("Invalid category name");
+				throw new CategoryException("Invalid category name");
 			}
 			ResultSet resultSet = selectStatement.executeQuery();
 			PreparedStatement insertStatement = connection.prepareStatement(INSERT_CATEGORY);
@@ -45,14 +43,12 @@ public class CategoryDAO {
 			}
 			insertStatement.setString(2, subcategory);
 			insertStatement.executeUpdate();
-		} catch (
-		Exception e) {
+		} catch (Exception e) {
 			throw new UserException("Failed to add category", e);
 		}
 	}
-	
+
 	public static void deleteCategory(String name) throws ConnectionException, UserException {
-		Connection connection = DBConnection.getInstance().getConnection();
 
 		try {
 			System.err.println(name);
@@ -66,14 +62,13 @@ public class CategoryDAO {
 			PreparedStatement insertStatement = connection.prepareStatement(DELETE_CATEGORY);
 			insertStatement.setInt(1, categoryId);
 			insertStatement.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			throw new UserException("Failed to delete category", e);
 		}
 	}
-	
+
 	public static List<String> showAllCategories() throws ConnectionException, NewsException {
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(SHOW_CATEGORIES);
 			ResultSet resultSet = statement.executeQuery();
@@ -87,9 +82,8 @@ public class CategoryDAO {
 			throw new NewsException("Failed to show categories.", e);
 		}
 	}
-	
+
 	public static Map<String, List<String>> AllCategories() throws ConnectionException, NewsException {
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement categoryStatement = connection.prepareStatement(GET_MAIN_CATEGORIES);
 			ResultSet resultSet = categoryStatement.executeQuery();
@@ -100,7 +94,7 @@ public class CategoryDAO {
 				subStatement.setString(1, categoryName);
 				ResultSet subResultSet = subStatement.executeQuery();
 				ArrayList<String> subcategories = new ArrayList<String>();
-				while (subResultSet.next()){
+				while (subResultSet.next()) {
 					String subcategoryName = subResultSet.getString("sub.name");
 					subcategories.add(subcategoryName);
 				}

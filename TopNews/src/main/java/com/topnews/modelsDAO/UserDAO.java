@@ -11,7 +11,7 @@ import com.topnews.validators.EmailValidator;
 import com.topnews.validators.PasswordValidator;
 import com.topnews.validators.UsernameValidator;
 
-public class UserDAO {
+public class UserDAO extends AbstractDAO{
 
 	private static final String INSERT_USER_IN_SQL = "INSERT INTO news_db.users VALUES (null,?,md5(?),?,false);";
 	private static final String CHECK_USER_EXISTING = "SELECT COUNT(*) FROM news_db.users WHERE username = ? AND password = md5(?);";
@@ -20,7 +20,6 @@ public class UserDAO {
 
 	public static boolean registerUser(IUser user) throws ConnectionException, UserException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(INSERT_USER_IN_SQL);
 			boolean isValidUsername = new UsernameValidator().validate(user.getUsername());
@@ -41,7 +40,6 @@ public class UserDAO {
 
 	public static boolean isUserExisting(IUser user) throws ConnectionException, UserException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 
 			PreparedStatement statement = connection.prepareStatement(CHECK_USER_EXISTING);
@@ -64,9 +62,7 @@ public class UserDAO {
 
 	public static int getUserIdFromDB(String username) throws ConnectionException, UserException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
-
 			PreparedStatement statement = connection.prepareStatement(CHECK_USER_ID);
 			statement.setString(1, username);
 			ResultSet resultSet = statement.executeQuery();
@@ -80,7 +76,6 @@ public class UserDAO {
 
 	public static boolean isAdmin(IUser user) throws ConnectionException, UserException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(CHECK_IS_ADMIN);
 			statement.setString(1, user.getUsername());

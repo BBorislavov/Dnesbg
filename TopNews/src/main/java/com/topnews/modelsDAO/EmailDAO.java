@@ -16,7 +16,7 @@ import com.topnews.exceptions.NewsException;
 import com.topnews.models.Email;
 import com.topnews.models.IEmail;
 
-public class EmailDAO {
+public class EmailDAO extends AbstractDAO {
 
 	private static final String ADD_EMAIL = "INSERT INTO news_db.emails VALUES (null,?,?,?,?, 0);";
 	private static final String INSERT_PHOTO = "INSERT INTO news_db.photos VALUES(null, null, ?, ?);";
@@ -33,14 +33,14 @@ public class EmailDAO {
 	private static final String DELETE_EMAIL = "DELETE FROM emails WHERE id=?;";
 	private static final String DELETE_PHOTO = "DELETE FROM photos WHERE email_id = ?;";
 
-
 	public static boolean sendEmail(IEmail email, int userId, String photoUrl)
 			throws NewsException, ConnectionException {
-		Connection connection = DBConnection.getInstance().getConnection();
-		String subject = email.getSubject();
-		String text = email.getText();
-		String date = LocalDateTime.now().toString();
+		
 		try {
+			String subject = email.getSubject();
+			String text = email.getText();
+			String date = LocalDateTime.now().toString();
+			
 			PreparedStatement insertStatement = connection.prepareStatement(ADD_EMAIL);
 			insertStatement.setInt(1, userId);
 			insertStatement.setString(2, subject);
@@ -67,7 +67,6 @@ public class EmailDAO {
 	}
 
 	public static int numberOfUnreaded() throws ConnectionException, NewsException {
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(NUMBER_OF_UNREADED);
 			ResultSet resultSet = statement.executeQuery();
@@ -81,7 +80,6 @@ public class EmailDAO {
 	}
 
 	public static List<IEmail> showUnreaded() throws ConnectionException, NewsException {
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(GET_UNREADED);
 			ResultSet resultSet = statement.executeQuery();
@@ -102,7 +100,6 @@ public class EmailDAO {
 	}
 
 	public static int numberOfReaded() throws ConnectionException, NewsException {
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(NUMBER_OF_READED);
 			ResultSet resultSet = statement.executeQuery();
@@ -116,7 +113,6 @@ public class EmailDAO {
 	}
 
 	public static List<IEmail> showReaded() throws ConnectionException, NewsException {
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(GET_READED);
 			ResultSet resultSet = statement.executeQuery();
@@ -143,13 +139,13 @@ public class EmailDAO {
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			resultSet.next();
-			
+
 			String sender = resultSet.getString("u.username");
 			String subject = resultSet.getString("e.subject");
 			String url = resultSet.getString("p.url");
 			String text = resultSet.getString("e.text");
 			String date = resultSet.getString("e.date");
-			
+
 			IEmail alert = new Email(sender, subject, text, date, url, id);
 			return alert;
 		} catch (Exception e) {
@@ -159,22 +155,20 @@ public class EmailDAO {
 
 	public static void setReaded(int id) throws SQLException, ConnectionException, AlertException {
 		try {
-		Connection connection = DBConnection.getInstance().getConnection();
-		PreparedStatement addPhotoStatement = connection.prepareStatement(SET_READED);
-		addPhotoStatement.setInt(1, id);
-		addPhotoStatement.executeUpdate();
+			PreparedStatement addPhotoStatement = connection.prepareStatement(SET_READED);
+			addPhotoStatement.setInt(1, id);
+			addPhotoStatement.executeUpdate();
 		} catch (Exception e) {
 			throw new AlertException("Failed to set readed", e);
 		}
 	}
 
 	public static boolean deleteAlert(int id) throws ConnectionException, CommentException {
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement photoStatement = connection.prepareStatement(DELETE_PHOTO);
 			photoStatement.setInt(1, id);
 			photoStatement.executeUpdate();
-			
+
 			PreparedStatement statement = connection.prepareStatement(DELETE_EMAIL);
 			statement.setInt(1, id);
 			statement.executeUpdate();

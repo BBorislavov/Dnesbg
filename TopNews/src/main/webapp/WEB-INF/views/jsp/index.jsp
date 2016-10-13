@@ -5,7 +5,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Welcome to Top News</title>
+<title><spring:message code="WelcomeToTopNews" text="default text" /></title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <jsp:include page="./admin_panel/panel_style.jsp"></jsp:include>
 </head>
@@ -16,7 +16,7 @@
 	<div class="row">
 		<div class="col-lg-12 col-md-12">
 			<div class="latest_newsarea">
-				<span>Latest News</span>
+				<span><spring:message code="LatestNews" text="default text" /></span>
 				<ul id="ticker01" class="news_sticker">
 				 <c:forEach var="latestNews" items="${latestNews}">
 					<li><a href="#"><img src="${latestNews.photoUrl}"
@@ -55,7 +55,7 @@
       </div>
       <div class="col-lg-4 col-md-4 col-sm-4">
         <div class="latest_post">
-          <h2><span>Popular news</span></h2>
+          <h2><span><spring:message code="PopularNews" text="default text" /></span></h2>
           <div class="latest_post_container">
             <div id="prev-button"><i class="fa fa-chevron-up"></i></div>
             <ul class="latest_postnav">

@@ -1,5 +1,8 @@
 package com.topnews.controllers;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -9,7 +12,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.topnews.exceptions.ConnectionException;
+import com.topnews.exceptions.NewsException;
+import com.topnews.models.INews;
 import com.topnews.models.User;
+import com.topnews.modelsDAO.CategoryDAO;
+import com.topnews.modelsDAO.NewsDAO;
 import com.topnews.modelsDAO.UserDAO;
 
 @Controller
@@ -39,6 +47,23 @@ public class RegisterController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String showLogged(Model model) {
 		model.addAttribute(new User());
+		List<INews> popularNews;
+		try {
+			popularNews = NewsDAO.showAllNews("rating");
+			List<INews> latestNews = NewsDAO.showAllNews("date");
+			model.addAttribute("latestNews", latestNews);
+			model.addAttribute("popularNews", popularNews);
+			Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
+			model.addAttribute("allCategories", allCategories);
+			
+		} catch (ConnectionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NewsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return "register";
 	}
 }

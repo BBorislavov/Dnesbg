@@ -48,7 +48,7 @@
 							</c:if>
 							</c:if>
 						</h3>
-						<a href="./News?category=${name}&id=${listCategory.id}"><img
+						<a style = "border: 5px solid #89d2f0" href="./News?category=${name}&id=${listCategory.id}"><img
 							height="100" width="150" src="${listCategory.photoUrl}"></a>
 						<h5>${listCategory.text}<a
 								href="./News?category=${name}&id=${listCategory.id}"><img

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -29,14 +30,14 @@
 		<ul class="nav navbar-nav main_nav">
 			<li class="active"><a href="./"><span
 					class="fa fa-home desktop-home"></span><span class="mobile-show">Home</span></a></li>
-					<li><a href="Category?name=World">World</a></li>
+					<li><a href="Category?name=World"><spring:message code="World" text="default text" /></a></li>
 			<c:forEach var="category" items="${allCategories}">
 				<li class="dropdown"><a href="Category?name=${category.key}" class="dropdown-toggle"
-					data-toggle="dropdown" role="button" aria-expanded="false">${category.key}</a>
+					data-toggle="dropdown" role="button" aria-expanded="false"><spring:message code="${category.key}" text="default text" /></a>
 					<ul class="dropdown-menu" role="menu">
 						<c:forEach var="name" items="${category.value}">
 						<c:if test="${not empty name}">
-							<li><a href="Category?name=${name}">${name}</a></li>
+							<li><a href="Category?name=${name}"><spring:message code="${name}" text="default text" /></a></li>
 						</c:if>
 						<c:if test="${empty name}">
 							<li><a href="Category?name=${category.key}">${category.key}</a></li>
@@ -52,7 +53,7 @@
 					<li><a style="color: red" href="Alert">Alert us</a></li>
 				</c:when>
 			</c:choose>
-			<li><a href="Weather">Weather</a></li>	
+			<li><a href="Weather"><spring:message code="Weather" text="default text" /></a></li>	
 		</ul>
 	</div>
 	</nav> </section>

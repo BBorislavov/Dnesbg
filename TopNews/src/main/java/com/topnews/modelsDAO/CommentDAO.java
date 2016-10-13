@@ -1,6 +1,5 @@
 package com.topnews.modelsDAO;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ import com.topnews.exceptions.NewsException;
 import com.topnews.exceptions.UserException;
 import com.topnews.models.Comment;
 
-public class CommentDAO {
+public class CommentDAO extends AbstractDAO {
 	
 	private static final String ADD_COMMENT = "INSERT INTO news_db.comments " + "VALUES(null,?,?,?,?);";
 	private static final String DELETE_COMMENT = "DELETE FROM news_db.comments WHERE comment_id=?;";
@@ -22,8 +21,6 @@ public class CommentDAO {
 			+ " JOIN news_db.users u ON(c.user_id=u.id) WHERE News_id=? ORDER BY date DESC;";
 	
 	public static boolean addComment(int newsId, int userId, String text) throws ConnectionException, UserException {
-
-		Connection connection = DBConnection.getInstance().getConnection();
 		String currentTime = LocalDateTime.now().toString();
 
 		try {
@@ -42,8 +39,6 @@ public class CommentDAO {
 	public static boolean removeComment(int id)
 			throws ConnectionException, CommentException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
-
 		try {
 			PreparedStatement statement = connection.prepareStatement(DELETE_COMMENT);
 			statement.setInt(1, id);
@@ -56,7 +51,6 @@ public class CommentDAO {
 	
 	public static List<Comment> showCommentsUnderNews(int id) throws ConnectionException, NewsException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(GET_NEWS_COMMENTS);
 			statement.setInt(1, id);

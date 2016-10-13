@@ -36,9 +36,13 @@ public class LoginController {
 						httpSession.setAttribute("isAdmin", UserDAO.isAdmin(user));
 					}
 					httpSession.setMaxInactiveInterval(FIFTHEEN_MINUTES);
-					if ((String) httpSession.getAttribute("referer")!=null){
-					String referer = (String) httpSession.getAttribute("referer");
-					return "redirect:" + referer;
+					if ((String) httpSession.getAttribute("referer") != null) {
+						String referer = (String) httpSession.getAttribute("referer");
+						if (!referer.equals("http://localhost:8080/TopNews/Login")) {
+							return "redirect:" + referer;
+						} else {
+							return "redirect:/index";
+						}
 					} else {
 						return "/index";
 					}
@@ -56,6 +60,21 @@ public class LoginController {
 		model.addAttribute(new User());
 		String referer = request.getHeader("Referer");
 		session.setAttribute("referer", referer);
+		try {
+			List<INews> allNews = NewsDAO.showAllNews();
+			List<INews> popularNews = NewsDAO.showAllNews("rating");
+			List<INews> latestNews = NewsDAO.showAllNews("date");
+			model.addAttribute("latestNews", latestNews);
+			model.addAttribute("popularNews", popularNews);
+			model.addAttribute("allNews", allNews);
+			Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
+			model.addAttribute("allCategories", allCategories);
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+		} catch (NewsException e) {
+			e.printStackTrace();
+		}
+
 		return "login";
 	}
 

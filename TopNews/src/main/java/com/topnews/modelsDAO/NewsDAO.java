@@ -27,7 +27,7 @@ import com.topnews.exceptions.UserException;
 import com.topnews.models.INews;
 import com.topnews.models.News;
 
-public class NewsDAO {
+public class NewsDAO extends AbstractDAO{
 
 	private static final String DEFAULT_TITLE = "No title";
 	private static final String DEFAULT_TEXT = "No text";
@@ -64,12 +64,12 @@ public class NewsDAO {
 	private static final String CHECK_FOR_EXISTING = "SELECT COUNT(*) FROM news WHERE title = ? AND text = ?";
 
 	public static void addNews(INews news, String category, String photoUrl) throws NewsException, ConnectionException {
-		Connection connection = DBConnection.getInstance().getConnection();
-		String title = news.getTitle();
-		String text = news.getText();
-		String date = LocalDateTime.now().toString();
 
 		try {
+			String title = news.getTitle();
+			String text = news.getText();
+			String date = LocalDateTime.now().toString();
+
 			PreparedStatement insertStatement = connection.prepareStatement(INSERT_NEWS);
 			insertStatement.setString(1, title);
 			insertStatement.setString(2, text);
@@ -104,7 +104,6 @@ public class NewsDAO {
 	}
 
 	public static void deleteNews(int id) throws ConnectionException, UserException {
-		Connection connection = DBConnection.getInstance().getConnection();
 
 		try {
 			PreparedStatement photoStatement = connection.prepareStatement(DELETE_PHOTO);
@@ -126,7 +125,6 @@ public class NewsDAO {
 
 	public static List<News> showNewsInSubcategory(String subcategoryName) throws ConnectionException, NewsException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(SHOW_NEWS_FROM_SUBCATEGORY);
 			statement.setString(1, subcategoryName);
@@ -160,7 +158,6 @@ public class NewsDAO {
 	public static List<News> showLastNewsInSubcategory(String subcategoryName)
 			throws ConnectionException, NewsException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(SHOW_LAST_NEWS_FROM_SUBCATEGORY);
 			statement.setString(1, subcategoryName);
@@ -184,7 +181,6 @@ public class NewsDAO {
 
 	public static INews showCurrentNews(int id) throws ConnectionException, NewsException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(SHOW_CURRENT_NEWS);
 			statement.setInt(1, id);
@@ -205,7 +201,6 @@ public class NewsDAO {
 
 	public static List<INews> showAllNews() throws ConnectionException, NewsException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(SHOW_ALL_NEWS);
 			ResultSet resultSet = statement.executeQuery();
@@ -242,7 +237,6 @@ public class NewsDAO {
 
 	public static List<INews> showAllNews(String orderBy) throws ConnectionException, NewsException {
 
-		Connection connection = DBConnection.getInstance().getConnection();
 		try {
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(GET_NEWS + orderBy + DESCENDING);
@@ -265,7 +259,6 @@ public class NewsDAO {
 
 	public static boolean increaseRating(int newsId) {
 		try {
-			Connection connection = DBConnection.getInstance().getConnection();
 			PreparedStatement getStatement = connection.prepareStatement(GET_RATING);
 			getStatement.setInt(1, newsId);
 			ResultSet resultSet = getStatement.executeQuery();
@@ -278,8 +271,6 @@ public class NewsDAO {
 			return true;
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ConnectionException e) {
 			e.printStackTrace();
 		}
 		return false;
@@ -349,40 +340,39 @@ public class NewsDAO {
 
 		try {
 			if (isNotExisting(news)) {
-			Connection connection = DBConnection.getInstance().getConnection();
-			String title = news.getTitle();
-			String text = news.getText();
-			String date = news.getDateOfPost().substring(0, news.getDateOfPost().length() - 1);
-			String photoUrl = news.getPhotoUrl();
-			String category = "World";
+				String title = news.getTitle();
+				String text = news.getText();
+				String date = news.getDateOfPost().substring(0, news.getDateOfPost().length() - 1);
+				String photoUrl = news.getPhotoUrl();
+				String category = "World";
 
-			PreparedStatement insertStatement = connection.prepareStatement(INSERT_NEWS);
-			insertStatement.setString(1, title);
-			insertStatement.setString(2, text);
-			insertStatement.setString(3, date);
-			insertStatement.executeUpdate();
+				PreparedStatement insertStatement = connection.prepareStatement(INSERT_NEWS);
+				insertStatement.setString(1, title);
+				insertStatement.setString(2, text);
+				insertStatement.setString(3, date);
+				insertStatement.executeUpdate();
 
-			PreparedStatement idStatement = connection.prepareStatement(GET_NEWS_ID);
-			idStatement.setString(1, title);
-			ResultSet resultSetNews = idStatement.executeQuery();
-			resultSetNews.next();
-			int newsId = resultSetNews.getInt(1);
+				PreparedStatement idStatement = connection.prepareStatement(GET_NEWS_ID);
+				idStatement.setString(1, title);
+				ResultSet resultSetNews = idStatement.executeQuery();
+				resultSetNews.next();
+				int newsId = resultSetNews.getInt(1);
 
-			PreparedStatement addPhotoStatement = connection.prepareStatement(INSERT_PHOTO);
-			addPhotoStatement.setInt(1, newsId);
-			addPhotoStatement.setString(2, photoUrl);
-			addPhotoStatement.executeUpdate();
+				PreparedStatement addPhotoStatement = connection.prepareStatement(INSERT_PHOTO);
+				addPhotoStatement.setInt(1, newsId);
+				addPhotoStatement.setString(2, photoUrl);
+				addPhotoStatement.executeUpdate();
 
-			PreparedStatement statementGetCategoryId = connection.prepareStatement(CategoryDAO.GET_CATEGORY_ID);
-			statementGetCategoryId.setString(1, category);
-			ResultSet resultSetCategory = statementGetCategoryId.executeQuery();
-			resultSetCategory.next();
-			int categoryId = resultSetCategory.getInt(1);
+				PreparedStatement statementGetCategoryId = connection.prepareStatement(CategoryDAO.GET_CATEGORY_ID);
+				statementGetCategoryId.setString(1, category);
+				ResultSet resultSetCategory = statementGetCategoryId.executeQuery();
+				resultSetCategory.next();
+				int categoryId = resultSetCategory.getInt(1);
 
-			PreparedStatement statementInsertNewsCategory = connection.prepareStatement(INSERT_NEWS_IN_CATEGORY);
-			statementInsertNewsCategory.setInt(1, newsId);
-			statementInsertNewsCategory.setInt(2, categoryId);
-			statementInsertNewsCategory.executeUpdate();
+				PreparedStatement statementInsertNewsCategory = connection.prepareStatement(INSERT_NEWS_IN_CATEGORY);
+				statementInsertNewsCategory.setInt(1, newsId);
+				statementInsertNewsCategory.setInt(2, categoryId);
+				statementInsertNewsCategory.executeUpdate();
 			}
 
 		} catch (SQLException e) {
@@ -393,7 +383,6 @@ public class NewsDAO {
 
 	private static boolean isNotExisting(News news) throws NewsException {
 		try {
-			Connection connection = DBConnection.getInstance().getConnection();
 
 			String title = news.getTitle();
 			String text = news.getText();
