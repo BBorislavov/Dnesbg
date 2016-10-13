@@ -1,65 +1,80 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Top News: ${name}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <jsp:include page="admin_panel/panel_style.jsp"></jsp:include>
-
-<title>News for ${name}</title>
 </head>
 <body>
-<div id="preloader">
-  <div id="status">&nbsp;</div>
-</div>
-<a class="scrollToTop" href="#"><i class="fa fa-angle-up"></i></a>
-<div class="container">
-<<<<<<< HEAD
- <jsp:include page="admin_panel/header.jsp"></jsp:include>
- <jsp:include page="admin_panel/navigation.jsp"></jsp:include>
- <h1>All news for ${name} category</h1>
- <div class="container">
- <ul>
- <c:forEach var="listCategory" items="${news}">
- <li><img height="50" width="50" src="${listCategory.photoUrl}"></li>
- <li><a href="./News?category=${name}&id=${listCategory.id}">${listCategory.title}</a></li>
-=======
-  <header id="header">
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="header_bottom">
-          <div class="logo_area"><a href="/Home" class="logo"><img src="./images/logo.jpg" alt=""></a></div>
-          <div class="add_banner"><a href="#"><img src="./images/banners-news.jpg" alt=""></a></div>
-        </div>
-      </div>
-    </div>
-  </header>
- <jsp:include page="admin_panel/navigation.jsp"></jsp:include>
- <h1>All news for ${name} category</h1>
- <ul>
- <c:forEach var="listCategory" items="${news}">
- <li><img height="50" width="50" src="${listCategory.photoUrl}"></li>
- <li>${listCategory.title}</li>
->>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
- <li>${listCategory.dateOfPost}</li>
- </br>
-  </c:forEach>
- </ul>
-<<<<<<< HEAD
- </div>
-=======
->>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
- <jsp:include page="admin_panel/footer.jsp"></jsp:include>
-</div>
-<script src="./assets/js/jquery.min.js"></script>
-<script src="./assets/js/wow.min.js"></script>
-<script src="./assets/js/bootstrap.min.js"></script>
-<script src="./assets/js/slick.min.js"></script>
-<script src="./assets/js/jquery.li-scroller.1.0.js"></script>
-<script src="./assets/js/jquery.newsTicker.min.js"></script>
-<script src="./assets/js/jquery.fancybox.pack.js"></script>
-<script src="./assets/js/custom.js"></script>
-</body>
-</html>
+	<c:if test="${not empty isAdmin}">
+		<jsp:include page="admin_panel/header.jsp"></jsp:include>
+		<jsp:include page="admin_panel/navigation.jsp">
+			<jsp:param value="${categories}" name="categories" />
+		</jsp:include>
+	</c:if>
+	<c:if test="${empty isAdmin}">
+		<jsp:include page="user_panel/header.jsp"></jsp:include>
+		<jsp:include page="user_panel/navigation.jsp">
+			<jsp:param value="${categories}" name="categories" />
+		</jsp:include>
+	</c:if>
+	<div class="single_sidebar">
+		<h2>
+			<span>All News in ${name} category</span>
+		</h2>
+		<div class="newsSection">
+			<div class="single_page">
+				<ul>
+					<c:forEach var="listCategory" items="${news}">
+						<h3>
+							<a href="./News?category=${name}&id=${listCategory.id}">${listCategory.title}
+							</a>
+							<c:if test="${not empty isAdmin}">
+							<i class="fa fa-arrow-up" aria-hidden="true"></i>
+							<i class="fa fa-arrow-down" aria-hidden="true"></i>
+							<a style = "color: red" class="deleteNews" href="./DeleteNews?id=${listCategory.id}">
+							<i class="fa fa-times" aria-hidden="true"></i>
+							</a>
+							</c:if>
+							<c:if test="${empty isAdmin}">
+							<c:if test="${not empty user}">
+							<a class="addFavourite" href="./AddFavourite?id=${listCategory.id}">
+							<i class="fa fa-heart" aria-hidden="true"></i>
+							</a>
+							</c:if>
+							</c:if>
+						</h3>
+						<a href="./News?category=${name}&id=${listCategory.id}"><img
+							height="100" width="150" src="${listCategory.photoUrl}"></a>
+						<h5>${listCategory.text}<a
+								href="./News?category=${name}&id=${listCategory.id}"><img
+								src="./images/more.gif"></a>
+						</h5>
+						<div class="post_commentbox">
+							<span><i class="fa fa-calendar"></i>${listCategory.dateOfPost}</span>
+							<span><i class="fa fa-eye"></i>${listCategory.rating}</span>
+						</div>
+						<br>
+					</c:forEach>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<c:if test="${not empty isAdmin}">
+		<jsp:include page="admin_panel/footer.jsp"></jsp:include>
+	</c:if>
+	<c:if test="${empty isAdmin}">
+		<jsp:include page="user_panel/footer.jsp"></jsp:include>
+	</c:if>
+	<script type="text/javascript">
+		$('.deleteNews').click(function(e) {
+			if (!confirm('Are you sure you want to delete this new ?')) {
+				e.preventDefault();
+			}
+
+		});
+	</script>

@@ -15,7 +15,8 @@ public class LogoutController {
 				httpSession.invalidate();
 					return "redirect:/";
 		} catch (Exception e) {
-			return "login";
+			e.printStackTrace();
+			return "redirect:/Login";
 		}
 	}
 	

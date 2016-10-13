@@ -8,14 +8,10 @@
     "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Login</title>
-<style>
-.error {
-	color: red;
-	font-weight: bold;
-}
-</style>
+
 </head>
 <body>
 	<div align="center">

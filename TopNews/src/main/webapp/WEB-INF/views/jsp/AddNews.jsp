@@ -1,83 +1,65 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>   
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<title>Add News</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <jsp:include page="admin_panel/panel_style.jsp"></jsp:include>
-<title>Add News</title>
+<script type="text/javascript">
+function Validatebodypanelbumper(theForm)
+{
+   var regexp;
+   var extension = new FormData(theForm).get("file").value.lastIndexOf('.');
+   if ((extension.toLowerCase() != ".gif") &&
+       (extension.toLowerCase() != ".jpg") &&
+       (extension != ""))
+   {
+      alert("The \"FileUpload\" field contains an unapproved filename.");
+      theForm.file.focus();
+      return false;
+   }
+   return true;
+}
+</script>
 </head>
 <body>
-<div id="preloader">
-  <div id="status">&nbsp;</div>
-</div>
-<a class="scrollToTop" href="#"><i class="fa fa-angle-up"></i></a>
-<div class="container">
-<<<<<<< HEAD
- <jsp:include page="admin_panel/header.jsp"></jsp:include>
-=======
-  <header id="header">
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="header_bottom">
-          <div class="logo_area"><a href="/Home" class="logo"><img src="images/logo.jpg" alt=""></a></div>
-          <div class="add_banner"><a href="#"><img src="images/banners-news.jpg" alt=""></a></div>
-        </div>
-      </div>
-    </div>
-  </header>
->>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
- <jsp:include page="admin_panel/navigation.jsp"></jsp:include>
-   <section id="contentSection">
-    <div class="row">
-      <div class="col-lg-7 col-md-7 col-sm-7">
-        <div class="left_content">
-          <div class="contact_area">
-            <h2>Add News</h2>
-            <br/>
-            <form:form action="AddNews" class="contact_form" commandName="news">
-            <form:select path="category" class="form-control" type="text">
-            <optgroup label="Categories:"></optgroup>
-  			<option value="World">World</option>
-  			<optgroup label="Bulgaria"></optgroup>
-  			<option value="Politics">Politics</option>
- 			<option value="Education">Education</option>
- 			<option value="Sofia">Sofia</option>
- 			<optgroup label="Sport"></optgroup>
- 			<option value="Football">Football</option>
- 			<option value="Volleyball">Volleyball</option>
- 			<option value="Tennis">Tennis</option>
- 			<option value="Other">Other sports</option>
- 			<optgroup label="Other Categories"></optgroup>
- 			<option value="Health">Health</option>
- 			<option value="Business">Business</option>
- 			<option value="Technologies">Technologies</option>
- 			</form:select>
- 			<br/>
-            <form:input path="title" class="form-control" type="text" placeholder="Enter title*"/>
-              <h4>Photo upload</h4>
-            <form:input path="photoUrl" class="form-control" type="file" accept="image/*"/>
-              <br/>
-            <form:textarea path="text" class="form-control" name="text" cols="30" rows="10" placeholder="Enter text here*"/></textarea>
-              <input type="submit" value="Add to Site">
-            </form:form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
- <jsp:include page="admin_panel/footer.jsp"></jsp:include>
-</div>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/wow.min.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/slick.min.js"></script>
-<script src="assets/js/jquery.li-scroller.1.0.js"></script>
-<script src="assets/js/jquery.newsTicker.min.js"></script>
-<script src="assets/js/jquery.fancybox.pack.js"></script>
-<script src="assets/js/custom.js"></script>
-</body>
-</html>
+<jsp:include page="admin_panel/header.jsp"></jsp:include>
+ <jsp:include page="admin_panel/navigation.jsp">
+ <jsp:param value="${categories}" name="categories"/>
+ </jsp:include>
+	<section id="contentSection">
+	<div class="row">
+		<div class="col-lg-7 col-md-7 col-sm-7">
+			<div class="left_content">
+				<div class="contact_area">
+					<h2>Add News</h2>
+					<br /> 
+					<h3 style="color: green">${message}</h3>
+					<h3 style="color: red">${error}</h3>
+					<form:form class="contact_form" method="POST" action="AddNews" enctype="multipart/form-data" onsubmit="Validatebodypanelbumper()" commandName="news">
+						<form:select path="category" class="form-control" type="text">
+							<c:forEach var="categories" items="${categories}">
+								<option value="${categories}">${categories}</option>
+							</c:forEach>
+						</form:select>
+						<br />
+						<form:input path="title" class="form-control" type="text"
+							placeholder="Enter title*" />
+						<h4>Photo upload</h4>
+						<form:input path="photoUrl"  id="file" name="file" class="form-control" type="file"
+							accept="image/*" />
+						<br />
+						<form:textarea  path="text" class="form-control" name="text"
+							cols="30" rows="10" placeholder="Enter text here*" /> 
+						<input type="submit" value="Add to Site">
+					</form:form>
+				</div>
+			</div>
+		</div>
+	</div>
+	</section>
+	<jsp:include page="admin_panel/footer.jsp"></jsp:include>

@@ -1,78 +1,89 @@
 package com.topnews.models;
 
-import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.topnews.validators.AbstractValidator;
 
-import com.topnews.exceptions.CommentException;
-
-public class Comment {
+public class Comment implements IComment {
 
 	private String text;
-	private AtomicInteger commentId;
-	private int userId;
+	private int commentId;
+	private String user;
 	private int newsId;
-	private LocalDateTime date = LocalDateTime.now();
+	private String date;
 
-	public Comment(String text) throws CommentException {
+	public Comment(int id, String text, String user, String date) {
+		setCommentId(id);
 		setText(text);
-		setUserId(userId);
-		setNewsId(newsId);
+		setUser(user);
+		setDate(date);
 	}
 
+	public Comment() {
+	}
+
+	@Override
 	public String getText() {
 		return text;
 	}
 
-	public void setText(String text) throws CommentException {
-		if (isValidString(text)) {
+	@Override
+	public void setText(String text) {
+		if (AbstractValidator.isValidString(text)) {
 			this.text = text;
 		} else {
-			throw new CommentException("Invalid comment");
+			this.text = AbstractValidator.INVALID_COMMENT;
 		}
 	}
 
-	// public int getCommentId() {
-	// return commentId.get();
-	// }
-
-	public int getUserId() {
-		return userId;
+	@Override
+	public String getUser() {
+		return user;
 	}
 
-	public void setUserId(int userId) throws CommentException {
-		if (userId > 0) {
-			this.userId = userId;
+	@Override
+	public void setUser(String user) {
+		if (AbstractValidator.isValidString(user)) {
+			this.user = user;
 		} else {
-			throw new CommentException("Invalid userId");
+			this.user = AbstractValidator.INVALID_USERNAME;
 		}
 	}
 
+	@Override
 	public int getNewsId() {
 		return newsId;
 	}
 
-	public void setNewsId(int newsId) throws CommentException {
+	@Override
+	public void setNewsId(int newsId) {
 		if (newsId > 0) {
 			this.newsId = newsId;
-		} else {
-			throw new CommentException("Invalid newsId");
 		}
 	}
 
-	public LocalDateTime getDate() {
+	@Override
+	public String getDate() {
 		return date;
 	}
 
-	public AtomicInteger getCommentId() {
+	@Override
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	@Override
+	public int getCommentId() {
 		return commentId;
 	}
 
-	public void setCommentId(AtomicInteger commentId) {
-		this.commentId = commentId;
+	@Override
+	public void setCommentId(int commentId) {
+		if (commentId > 0) {
+			this.commentId = commentId;
+		}
 	}
 
-	private static boolean isValidString(String string) {
-		return string != null && !string.trim().isEmpty();
+	public String toString() {
+		return "Comment [text=" + text + ", user=" + user + ", date=" + date + "]";
 	}
 
 }

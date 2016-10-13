@@ -1,58 +1,43 @@
 package com.topnews.models;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.topnews.exceptions.CategoryException;
-import com.topnews.exceptions.NameException;
+import com.topnews.validators.AbstractValidator;
 
-public class Category {
+public class Category implements ICategory {
 
+	private String subcategory;
 	private String name;
-	private AtomicInteger subcategoryId = new AtomicInteger(0);
-	private AtomicInteger categoryId = new AtomicInteger(0);
 
-	public Category(String name, int subcategoryId, int categoryId) throws NameException, CategoryException {
+	public Category(String name, String subcategory) throws CategoryException {
+		setSubcategory(subcategory);
 		setName(name);
-		setSubcategoryId(subcategoryId);
-		setCategoryId(categoryId);
 	}
 
 	public Category() {
+	}
+
+	public String getSubcategory() {
+		return subcategory;
+	}
+
+	public void setSubcategory(String subcategory) throws CategoryException {
+		if (subcategory != null) {
+			this.subcategory = subcategory;
+		} else {
+			this.subcategory = AbstractValidator.INVALID_SUBCATEGORY;
+		}
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) throws NameException {
-		if ((name != null) && (!name.trim().isEmpty())) {
-			this.name = name;
-		} else {
-			throw new NameException("Incorrect name of category");
-		}
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public int getSubcategoryId() {
-		return subcategoryId.get();
-	}
+	
 
-	public void setSubcategoryId(int subcategoryId) throws CategoryException {
-		if (subcategoryId > 0) {
-			this.subcategoryId.getAndSet(subcategoryId);
-		} else {
-			throw new CategoryException("Invalid subcategory");
-		}
-	}
 
-	public int getCategoryId() {
-		return categoryId.get();
-	}
 
-	public void setCategoryId(int categoryId) throws CategoryException {
-		if (categoryId > 0) {
-			this.categoryId.getAndSet(categoryId);
-		} else {
-			throw new CategoryException("Invalid category");
-		}
-	}
 }

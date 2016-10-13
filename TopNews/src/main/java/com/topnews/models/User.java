@@ -1,17 +1,15 @@
 package com.topnews.models;
 
-import com.topnews.exceptions.UserException;
-import com.topnews.interfaces.IUser;
+import com.topnews.validators.AbstractValidator;
 
 public class User implements IUser {
-
 	private int userId;
 	private String username;
 	private String password;
 	private String email;
 	private boolean isAdmin;
 
-	public User(String username, String password, String email) throws UserException {
+	public User(String username, String password, String email) {
 		setUsername(username);
 		setPassword(password);
 		setEmail(email);
@@ -21,11 +19,9 @@ public class User implements IUser {
 		return userId;
 	}
 
-	public void setUserId(int userId) throws UserException {
+	public void setUserId(int userId) {
 		if (userId > 0) {
 			this.userId = userId;
-		} else {
-			throw new UserException("Invalid user id");
 		}
 	}
 
@@ -37,19 +33,22 @@ public class User implements IUser {
 	}
 
 	public void setPassword(String password) {
-		if (isValidString(password))
-		this.password = password;
+		if (AbstractValidator.isValidString(password)) {
+			this.password = password;
+		} else {
+			this.password = AbstractValidator.INVALID_PASSWORD;
+		}
 	}
 
 	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(String email) throws UserException {
-		if (isValidString(email)) {
+	public void setEmail(String email) {
+		if (AbstractValidator.isValidString(email)) {
 			this.email = email;
 		} else {
-			throw new UserException("Invalid email");
+			this.email = AbstractValidator.INVALID_EMAIL;
 		}
 	}
 
@@ -65,19 +64,13 @@ public class User implements IUser {
 		return username;
 	}
 
-	public void setUsername(String username) throws UserException {
-		if (isValidString(username)) {
+	public void setUsername(String username) {
+		if (AbstractValidator.isValidString(username)) {
 			this.username = username;
-		} 
+		} else {
+			this.username = AbstractValidator.INVALID_USERNAME;
+		}
 
-	}
-
-	private static boolean isValidString(String string) {
-		return string != null && !string.trim().isEmpty();
-	}
-
-	public void giveRights(String name) throws UserException {
-		throw new UserException("You have no rights to set admin");
 	}
 
 }

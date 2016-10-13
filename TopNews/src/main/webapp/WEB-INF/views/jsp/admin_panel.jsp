@@ -5,29 +5,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<title>Admin Panel</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <jsp:include page="admin_panel/panel_style.jsp"></jsp:include>
-<title>Admin panel</title>
 </head>
 <body>
-<div id="preloader">
-  <div id="status">&nbsp;</div>
-</div>
-<a class="scrollToTop" href="#"><i class="fa fa-angle-up"></i></a>
-<div class="container">
 <jsp:include page="admin_panel/header.jsp"></jsp:include>
- <jsp:include page="admin_panel/navigation.jsp"></jsp:include>
-  <h3>Welcome, ${user.username}.</h1>
-  
+ <jsp:include page="admin_panel/navigation.jsp">
+ <jsp:param value="${categories}" name="categories"/>
+ </jsp:include>
+ <span><a  href="UnreadedAlerts"><i style="color: red" class="fa fa-folder-o"> unreaded (${unreaded})</color></i></a></span> 
+   <span><a  href="ReadedAlerts"><i style="color: green" class="fa fa-folder-open-o"> readed(${readed})</color></i></a></span>
+  <h3>Welcome, ${user.username}.</h3>
  <jsp:include page="admin_panel/footer.jsp"></jsp:include>
-</div>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/wow.min.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/slick.min.js"></script>
-<script src="assets/js/jquery.li-scroller.1.0.js"></script>
-<script src="assets/js/jquery.newsTicker.min.js"></script>
-<script src="assets/js/jquery.fancybox.pack.js"></script>
-<script src="assets/js/custom.js"></script>
-</body>
-</html>

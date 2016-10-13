@@ -1,5 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -15,6 +13,7 @@
 <link rel="stylesheet" type="text/css" href="./assets/css/jquery.fancybox.css">
 <link rel="stylesheet" type="text/css" href="./assets/css/theme.css">
 <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+<link rel="stylesheet" type="text/css" href="./assets/css/main-styles.css">
 <!--[if lt IE 9]>
 <script src="assets/js/html5shiv.min.js"></script>
 <script src="assets/js/respond.min.js"></script>

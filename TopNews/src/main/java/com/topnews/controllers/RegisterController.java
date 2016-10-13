@@ -1,6 +1,7 @@
 package com.topnews.controllers;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,21 +17,21 @@ import com.topnews.modelsDAO.UserDAO;
 public class RegisterController {
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String register(@ModelAttribute User user, Model model, HttpSession httpSession) {
-		try {
+	public String register(@Valid @ModelAttribute User user, Model model, HttpSession httpSession) {
+		try { 
 			if (UserDAO.isUserExisting(user)) {
 				model.addAttribute("message", "This account already exists");
 				return "register";
 			} else {
 				if (UserDAO.registerUser(user)) {
 					httpSession.setAttribute("user", user);
-					return "LoginSuccess";
+					return "redirect:./";
 				}
+				model.addAttribute("message", "Failed to register");
+				return "register";
 			}
-			model.addAttribute("message", "Invalid register");
-			return "register";
 		} catch (Exception e) {
-			model.addAttribute("message", "Invalid register");
+			e.printStackTrace();
 			return "register";
 		}
 	}

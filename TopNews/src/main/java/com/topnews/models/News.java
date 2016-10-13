@@ -1,69 +1,59 @@
 package com.topnews.models;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.topnews.exceptions.NewsException;
+import com.topnews.validators.AbstractValidator;
 
-public class News {
+public class News implements INews {
 	private int id;
 	private String title;
 	private String text;
 	private String photoUrl;
 	private String category;
-<<<<<<< HEAD
 	private String dateOfPost;
-	
+	private AtomicInteger rating = new AtomicInteger(0);
+
 	public News() {
 	}
-=======
-	private LocalDateTime dateOfPost = LocalDateTime.now();
->>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 
-	
-	
-	public News(String title, String text, String photoUrl, String date, int id) throws NewsException {
+	public News(String title, String text, String photoUrl, String date, int id, String category, int rating){
 		setTitle(title);
 		setText(text);
 		setPhotoUrl(photoUrl);
 		setDateOfPost(date);
 		setId(id);
+		setCategory(category);
+		setRating(rating);
+	}
+
+	public AtomicInteger getRating() {
+		return rating;
+	}
+
+	public void setRating(int rating) {
+
+		this.rating.getAndSet(rating);
 	}
 
 	public int getId() {
 		return id;
 	}
 
-<<<<<<< HEAD
-=======
-	public int getId() {
-		return id;
-	}
-
->>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
-	public void setId(int id) throws NewsException {
+	public void setId(int id) {
 		if (id > 0) {
-			this.id=id;
-		} else {
-			throw new NewsException("Invalid news id");
-		}
+			this.id = id;
+		} 
 	}
-<<<<<<< HEAD
-=======
-
-	public News() {
-	}
->>>>>>> 9946e4c20da744a7724d3382ab8643aa020cb169
 
 	public String getTitle() {
 		return title;
 	}
 
-	public void setTitle(String title) throws NewsException {
-		if (isValidString(title)) {
+	public void setTitle(String title) {
+		if (AbstractValidator.isValidString(title)) {
 			this.title = title;
 		} else {
-			throw new NewsException("Invalid title");
+			this.title = AbstractValidator.INVALID_TITLE;
 		}
 	}
 
@@ -71,11 +61,11 @@ public class News {
 		return text;
 	}
 
-	public void setText(String text) throws NewsException {
-		if (isValidString(text)) {
+	public void setText(String text) {
+		if (AbstractValidator.isValidString(text)) {
 			this.text = text;
 		} else {
-			throw new NewsException("Invalid text");
+			this.text = AbstractValidator.INVALID_TEXT;
 		}
 	}
 
@@ -100,11 +90,11 @@ public class News {
 	}
 
 	public void setCategory(String category) {
+		if (AbstractValidator.isValidString(category)){
 		this.category = category;
-	}
-
-	private static boolean isValidString(String string) {
-		return string != null && !string.trim().isEmpty();
+		} else {
+			this.category = AbstractValidator.INVALID_CATEGORY;
+		}
 	}
 
 }
