@@ -1,5 +1,6 @@
 package com.topnews.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.topnews.exceptions.CategoryException;
 import com.topnews.exceptions.ConnectionException;
 import com.topnews.exceptions.NewsException;
+import com.topnews.exceptions.UserException;
 import com.topnews.models.Category;
 import com.topnews.models.INews;
 import com.topnews.models.News;
@@ -26,8 +29,7 @@ import com.topnews.modelsDAO.UserDAO;
 public class CategoryController {
 
 	@RequestMapping(value = "/Category", method = RequestMethod.GET)
-	public String showNewsInCategory(@ModelAttribute("name") String name, Model model, HttpSession httpSession,
-			HttpServletRequest req) {
+	public String showNewsInCategory(Model model, HttpSession httpSession, HttpServletRequest req) {
 		try {
 			if ((User) httpSession.getAttribute("user") != null) {
 				boolean isAdmin = UserDAO.isAdmin((User) httpSession.getAttribute("user"));
@@ -35,26 +37,66 @@ public class CategoryController {
 					model.addAttribute("isAdmin", isAdmin);
 				}
 			}
-			List<News> worldNews = NewsDAO.getWorldNews();
-				for (int index = 0; index < worldNews.size(); index++) {
-					News currentNews = worldNews.get(index);
-					NewsDAO.addWorldNews(currentNews);
+			String name = null;
+			Integer page = 0;
+			if (req.getParameter("name") != null && req.getParameter("page") != null) {
+				name = req.getParameter("name");
+				page = Integer.parseInt(req.getParameter("page"));
+				if (CategoryDAO.isCategoryExists(name)) {
+					List<News> worldNews = NewsDAO.getWorldNews();
+					for (int index = 0; index < worldNews.size(); index++) {
+						News currentNews = worldNews.get(index);
+						NewsDAO.addWorldNews(currentNews);
+					}
+					int countOfPages = NewsDAO.getNumberOfPages(name);
+					int numberOfPage = 0;
+					List<Integer> pages = new ArrayList<Integer>();
+					if (countOfPages > 1) {
+						for (int index = 0; index < countOfPages; index++) {
+							numberOfPage++;
+							pages.add(numberOfPage);
+						}
+					}
+					List<News> news = NewsDAO.showNewsInChosenPage(name, page);
+					model.addAttribute("pages", pages);
+					model.addAttribute("news", news);
+					model.addAttribute("name", name);
+					List<INews> latestNews = NewsDAO.showAllNews("date");
+					model.addAttribute("latestNews", latestNews);
+					Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
+					model.addAttribute("allCategories", allCategories);
+					List<String> categories = CategoryDAO.showAllCategories();
+					model.addAttribute("categories", categories);
+					return "showCategory";
+				} else {
+					model.addAttribute("message",
+							"The category which currently you are trying to access does not exist.");
+					return "error-404";
 				}
-				List<News> news = NewsDAO.showNewsInSubcategory(name);
-			
-			model.addAttribute("news", news);
-			List<INews> latestNews = NewsDAO.showAllNews("date");
-			model.addAttribute("latestNews", latestNews);
-			Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
-			model.addAttribute("allCategories", allCategories);
-			List<String> categories = CategoryDAO.showAllCategories();
-			model.addAttribute("categories", categories);
-			return "showCategory";
+			} else {
+				model.addAttribute("message", "You have entered invalid data.");
+				return "error-404";
+			}
+
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+			return "index";
+		} catch (NewsException e) {
+			e.printStackTrace();
+			return "index";
+		} catch (UserException e) {
+			e.printStackTrace();
+			return "login";
+		} catch (CategoryException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "You have entered invalid data.");
+			return "error-404";
 		} catch (Exception e) {
-			return "forward:/Login";
+			e.printStackTrace();
+			model.addAttribute("message", "Something went wrong.");
+			return "error-404";
 		}
 	}
-
 
 	@RequestMapping(value = "/AddCategory", method = RequestMethod.POST)
 	public String AddCategory(@ModelAttribute("category") Category category, Model model, HttpSession httpSession) {

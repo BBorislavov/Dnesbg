@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,8 +26,11 @@ import com.topnews.exceptions.UserException;
 import com.topnews.models.INews;
 import com.topnews.models.News;
 
-public class NewsDAO extends AbstractDAO{
+public class NewsDAO extends AbstractDAO {
 
+	private static final int ALL_NEWS_EXCEPT_FIRST = 9;
+	private static final int BONUS_PAGE = 1;
+	private static final int NUMBER_OF_NEWS_IN_ONE_PAGE = 10;
 	private static final String DEFAULT_TITLE = "No title";
 	private static final String DEFAULT_TEXT = "No text";
 	private static final String BLANK_DATE_TIME = "2016-10-12 06:34:28";
@@ -40,10 +42,12 @@ public class NewsDAO extends AbstractDAO{
 	private static final String DELETE_NEWS_FROM_CATEGORY = "DELETE FROM news_db.news_has_categories WHERE news_id = ?;";
 	private static final String DELETE_NEWS = "DELETE FROM news_db.news WHERE id = ?;";
 	private static final String DELETE_PHOTO = "DELETE FROM news_db.photos WHERE news_id = ?;";
-	private static final String SHOW_NEWS_FROM_SUBCATEGORY = "SELECT n.id, n.rating, p.url, n.title, n.text, n.date FROM news_db.news n"
+	private static final String SHOW_NEWS_FROM_SUBCATEGORY = "SELECT n.id, n.rating, p.url, n.title, n.text, n.date FROM news n"
 			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " LEFT OUTER JOIN (news_db.photos p)"
 			+ " ON (n.id=p.news_id)" + " WHERE c.name=?;";
+	private static final String COUNT_NEWS_FROM_SUBCATEGORY = "SELECT COUNT(*) FROM news n JOIN news_has_categories nc"
+			+ " ON (n.id = nc.news_id) JOIN categories c ON (c.subcategory_id = nc.subcategory_id) WHERE c.name = ?;";
 	private static final String SHOW_LAST_NEWS_FROM_SUBCATEGORY = "SELECT n.id, n.rating, p.url, n.title, n.date, c.name FROM news_db.news n"
 			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " LEFT OUTER JOIN (news_db.photos p)"
@@ -123,13 +127,70 @@ public class NewsDAO extends AbstractDAO{
 		}
 	}
 
-	public static List<News> showNewsInSubcategory(String subcategoryName) throws ConnectionException, NewsException {
+//	public static List<News> showNewsInSubcategory(String subcategoryName) throws ConnectionException, NewsException {
+//
+//		try {
+//			PreparedStatement statement = connection.prepareStatement(SHOW_NEWS_FROM_SUBCATEGORY);
+//			statement.setString(1, subcategoryName);
+//			ResultSet resultSet = statement.executeQuery();
+//			List<News> newsInSubcategory = new ArrayList<News>();
+//			while (resultSet.next()) {
+//				String url = resultSet.getString("p.url");
+//				String title = resultSet.getString("n.title");
+//				String date = resultSet.getString("n.date");
+//				String fullText = resultSet.getString("n.text");
+//				int rating = resultSet.getInt("n.rating");
+//				int countSize = 0;
+//				for (int index = 0; index < fullText.length(); index++) {
+//					if (fullText.charAt(index) != '.') {
+//						countSize++;
+//					} else {
+//						break;
+//					}
+//				}
+//				String text = fullText.substring(0, countSize) + "...";
+//				int id = resultSet.getInt("n.id");
+//				News news = new News(title, text, url, date, id, subcategoryName, rating);
+//				newsInSubcategory.add(news);
+//			}
+//			return Collections.unmodifiableList(newsInSubcategory);
+//		} catch (Exception e) {
+//			throw new NewsException("Failed to show news.", e);
+//		}
+//	}
+
+	public static int getNumberOfPages(String subcategoryName) throws ConnectionException, NewsException {
+
+		try {
+			PreparedStatement statement = connection.prepareStatement(COUNT_NEWS_FROM_SUBCATEGORY);
+			statement.setString(1, subcategoryName);
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			int numberOfNews = resultSet.getInt(1);
+			int pages;
+			if (numberOfNews % NUMBER_OF_NEWS_IN_ONE_PAGE == 0) {
+				pages = numberOfNews / NUMBER_OF_NEWS_IN_ONE_PAGE;
+				return pages;
+			} else {
+				pages = (numberOfNews / NUMBER_OF_NEWS_IN_ONE_PAGE) + BONUS_PAGE;
+				return pages;
+			}
+		} catch (Exception e) {
+			throw new NewsException("Failed to count pages.", e);
+		}
+	}
+
+	public static List<News> showNewsInChosenPage(String subcategoryName, int pageNumber)
+			throws ConnectionException, NewsException {
 
 		try {
 			PreparedStatement statement = connection.prepareStatement(SHOW_NEWS_FROM_SUBCATEGORY);
 			statement.setString(1, subcategoryName);
 			ResultSet resultSet = statement.executeQuery();
-			List<News> newsInSubcategory = new ArrayList<News>();
+			List<News> newsInChosenPage = new ArrayList<News>();
+			int firstIndex = (pageNumber * NUMBER_OF_NEWS_IN_ONE_PAGE) - ALL_NEWS_EXCEPT_FIRST;
+			int lastIndex = (pageNumber * NUMBER_OF_NEWS_IN_ONE_PAGE);
+			int newsNumber = 0;
 			while (resultSet.next()) {
 				String url = resultSet.getString("p.url");
 				String title = resultSet.getString("n.title");
@@ -146,10 +207,12 @@ public class NewsDAO extends AbstractDAO{
 				}
 				String text = fullText.substring(0, countSize) + "...";
 				int id = resultSet.getInt("n.id");
-				News news = new News(title, text, url, date, id, subcategoryName, rating);
-				newsInSubcategory.add(news);
+				newsNumber++;
+				if (newsNumber >= firstIndex && newsNumber <= lastIndex) {
+					newsInChosenPage.add(new News(title, text, url, date, id, subcategoryName, rating));
+				}
 			}
-			return Collections.unmodifiableList(newsInSubcategory);
+			return Collections.unmodifiableList(newsInChosenPage);
 		} catch (Exception e) {
 			throw new NewsException("Failed to show news.", e);
 		}

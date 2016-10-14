@@ -8,7 +8,7 @@
 					<h2><spring:message code="Welcome" text="default text" /></h2>
 					<p><spring:message code="Hello" text="default text" />, 
 					<c:if test="${not empty user.username}">${user.username}.</c:if>
-					<c:if test="${empty user.username}">guest.</c:if>
+					<c:if test="${empty user.username}"><spring:message code="guest" text="default text"/>.</c:if>
 					</p>
 					
 				</div>

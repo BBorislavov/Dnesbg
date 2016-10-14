@@ -41,10 +41,10 @@ public class LoginController {
 						if (!referer.equals("http://localhost:8080/TopNews/Login")) {
 							return "redirect:" + referer;
 						} else {
-							return "redirect:/index";
+							return "redirect:/";
 						}
 					} else {
-						return "/index";
+						return "/";
 					}
 				}
 			}
@@ -94,6 +94,7 @@ public class LoginController {
 		} catch (NewsException e) {
 			e.printStackTrace();
 		}
+		//Global hendler
 		return "index";
 	}
 

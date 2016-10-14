@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.topnews.exceptions.ConnectionException;
+import com.topnews.exceptions.NewsException;
+import com.topnews.exceptions.UserException;
 import com.topnews.models.Comment;
 import com.topnews.models.INews;
 import com.topnews.models.News;
@@ -99,9 +102,11 @@ public class NewsController {
 	}
 
 	@RequestMapping(value = "/News", method = RequestMethod.GET)
-	public String showCurrentNews(@ModelAttribute("category") String category, @ModelAttribute("id") int id,
-			Model model, HttpSession httpSession) {
+	public String showCurrentNews(Model model, HttpSession httpSession, HttpServletRequest request) {
 		try {
+			String category = request.getParameter("category");
+			Integer id = Integer.parseInt(request.getParameter("id"));
+			if (category!=null && id!=null){
 			httpSession.setAttribute("id", id);
 			model.addAttribute("category", category);
 			httpSession.setAttribute("category", category);
@@ -123,10 +128,18 @@ public class NewsController {
 			model.addAttribute("allCategories", allCategories);
 			model.addAttribute(new Comment());
 			return "showCurrent";
-		} catch (Exception e) {
+			} else {
+				model.addAttribute("message", "Invalid news");
+				return "error-404";
+			}
+		} catch (UserException e) {
 			e.printStackTrace();
 			return "forward:/Login";
-		}
+		} catch (Exception e) {
+			model.addAttribute("message", "Something went wrong.");
+			e.printStackTrace();
+			return "error-404";
+		} 
 	}
 
 	@RequestMapping(value = "/DeleteNews", method = RequestMethod.GET)

@@ -24,6 +24,7 @@ public class CategoryDAO extends AbstractDAO {
 	private static final String GET_MAIN_CATEGORIES = "SELECT name FROM news_db.categories WHERE category_id is null AND subcategory_id <> 1 ORDER BY subcategory_id;";
 	private static final String DELETE_CATEGORY = "DELETE FROM news_db.categories WHERE subcategory_id=?;";
 	private static final String INSERT_CATEGORY = "INSERT INTO news_db.categories VALUES (? , null , ?);";
+	private static final String CHECK_CATEGORY_EXISTING = "SELECT COUNT(*) FROM categories WHERE name = ?;";
 
 	public static void addCategory(String category, String subcategory) throws ConnectionException, UserException {
 		try {
@@ -51,13 +52,11 @@ public class CategoryDAO extends AbstractDAO {
 	public static void deleteCategory(String name) throws ConnectionException, UserException {
 
 		try {
-			System.err.println(name);
 			PreparedStatement categoryIdStatement = connection.prepareStatement(GET_CATEGORY_ID);
 			categoryIdStatement.setString(1, name);
 			ResultSet resultSetNews = categoryIdStatement.executeQuery();
 			resultSetNews.next();
 			int categoryId = resultSetNews.getInt(1);
-			System.err.println(categoryId);
 
 			PreparedStatement insertStatement = connection.prepareStatement(DELETE_CATEGORY);
 			insertStatement.setInt(1, categoryId);
@@ -104,6 +103,24 @@ public class CategoryDAO extends AbstractDAO {
 		} catch (Exception e) {
 			throw new NewsException("Failed to show categories.", e);
 		}
+	}
+
+	public static boolean isCategoryExists(String name) throws CategoryException {
+		PreparedStatement categoryIdStatement;
+		try {
+			categoryIdStatement = connection.prepareStatement(CHECK_CATEGORY_EXISTING);
+			categoryIdStatement.setString(1, name);
+			ResultSet resultSetNews = categoryIdStatement.executeQuery();
+			resultSetNews.next();
+			int isExisting = resultSetNews.getInt(1);
+			if (isExisting == 1) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CategoryException("Failed check is category existing.", e);
+		}
+		return false;
 	}
 
 }
