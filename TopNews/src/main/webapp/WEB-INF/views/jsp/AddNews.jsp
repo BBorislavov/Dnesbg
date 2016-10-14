@@ -37,8 +37,8 @@ function Validatebodypanelbumper(theForm)
 			<div class="left_content">
 				<div class="contact_area">
 					<h2><spring:message code="addNews" text="Add News" /></h2> 
-					<h3 style="color: green">${message}</h3>
-					<h3 style="color: red">${error}</h3>
+					<h3 style="color: green"><spring:message code="${message}" text="" /></h3>
+					<h3 style="color: red"><spring:message code="${error}" text="" /></h3>
 					<h4><span><spring:message code="Category" text="Category" />:</span></h4>
 					<form:form class="contact_form" method="POST" action="AddNews" enctype="multipart/form-data" onsubmit="Validatebodypanelbumper()" commandName="news">
 						<form:select path="category" class="form-control" type="text">

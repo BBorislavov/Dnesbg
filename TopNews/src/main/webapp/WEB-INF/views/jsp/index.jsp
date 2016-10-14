@@ -16,7 +16,7 @@
 	<div class="row">
 		<div class="col-lg-12 col-md-12">
 			<div class="latest_newsarea">
-				<span><spring:message code="LatestNews" text="default text" /></span>
+				<span><spring:message code="LatestNews" text="Latest News" /></span>
 				<ul id="ticker01" class="news_sticker">
 				 <c:forEach var="latestNews" items="${latestNews}">
 					<li><a href="#"><img src="${latestNews.photoUrl}"

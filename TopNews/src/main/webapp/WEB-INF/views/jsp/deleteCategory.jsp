@@ -21,8 +21,7 @@
 			<div class="left_content">
 				<div class="contact_area">
 					<h2><spring:message code="deleteCategory" text="Delte Category" /></h2>
-					<br /> 
-					<h3 style="color: green">${message}</h3>
+					<h3 style="color: green"><spring:message code="${message}" text="" /></h3><br>
 					<form:form class="contact_form" method="POST" action="DeleteCategory" commandName="category">
 						<form:select path="subcategory" class="form-control" type="text">
 							<c:forEach var="categories" items="${categories}">

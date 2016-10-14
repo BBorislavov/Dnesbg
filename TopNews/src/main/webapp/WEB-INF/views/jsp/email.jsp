@@ -33,7 +33,7 @@ function Validatebodypanelbumper(theForm)
 	<div class="row">
 		<div class="col-lg-12 col-md-12">
 			<div class="latest_newsarea">
-				<span>Latest News</span>
+				<span><spring:message code="LatestNews" text="Latest News" /></span>
 				<ul id="ticker01" class="news_sticker">
 				 <c:forEach var="latestNews" items="${latestNews}">
 					<li><a href="#"><img src="${latestNews.photoUrl}"
@@ -61,28 +61,27 @@ function Validatebodypanelbumper(theForm)
        <div class="col-lg-7 col-md-7 col-sm-7">
 			<div class="left_content">
 				<div class="contact_area">
-					<h2>ALERT US</h2>
+					<h2><spring:message code="alertUs" text="Alert us" /></h2>
 					<br /> 
-					<h3 style="color: green">${message}</h3>
-					<h3 style="color: red">${error}</h3>
+					<h3 style="color: green"><spring:message code="${message}" text="" /></h3>
+					<h3 style="color: red"><spring:message code="${error}" text="" /></h3>
 					<form:form class="contact_form" method="POST" action="Alert" enctype="multipart/form-data" onsubmit="Validatebodypanelbumper()" commandName="email">
-						<br />
-						<form:input path="subject" class="form-control" type="text"
-							placeholder="Enter subject*" />
-						<h4>Photo upload</h4>
+						<h4><spring:message code="subject" text="Subject" /></h4>
+						<form:input path="subject" class="form-control" type="text"/>
+						<h4><spring:message code="photoUpload" text="Photo Upload" /></h4>
 						<form:input path="photo"  id="file" name="file" class="form-control" type="file"
 							accept="image/*" />
 						<br />
-						<form:textarea  path="text" class="form-control" name="text"
-							cols="30" rows="10" placeholder="Enter text here*" /> 
-						<input type="submit" value="Alert">
+						<h4><spring:message code="description" text="Description" /></h4>
+						<form:textarea path="text" class="form-control" name="text" cols="30" rows="10"/> 
+						<input type="submit" value="<spring:message code="alert" text="Alert" />">
 					</form:form>
 				</div>
 			</div>
 		</div>
              <div class="col-lg-4 col-md-4 col-sm-4">
         <div class="latest_post">
-          <h2><span>Popular news</span></h2>
+          <h2><span><spring:message code="PopularNews" text="default text" /></span></h2>
           <div class="latest_post_container">
             <div id="prev-button"><i class="fa fa-chevron-up"></i></div>
             <ul class="latest_postnav">

@@ -16,6 +16,8 @@ public class UserDAO extends AbstractDAO{
 	private static final String CHECK_USER_EXISTING = "SELECT COUNT(*) FROM news_db.users WHERE username = ? AND password = md5(?);";
 	public static final String CHECK_USER_ID = "SELECT news_db.users.id FROM news_db.users WHERE username = ?";
 	private static final String CHECK_IS_ADMIN = "SELECT is_admin FROM news_db.users WHERE username = ?;";
+	private static final String CHECK_USERNAME_EXISTING = "SELECT COUNT(*) FROM news_db.users WHERE username = ?;";
+
 
 	public static boolean registerUser(IUser user) throws ConnectionException, UserException {
 
@@ -56,6 +58,27 @@ public class UserDAO extends AbstractDAO{
 
 		} catch (Exception e) {
 			throw new UserException("Unable to login. Try again.", e);
+		}
+	}
+	
+	public static boolean isUsernameExisting(IUser user) throws ConnectionException, UserException {
+
+		try {
+
+			PreparedStatement statement = connection.prepareStatement(CHECK_USERNAME_EXISTING);
+			statement.setString(1, user.getUsername());
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			int isExisting = resultSet.getInt("COUNT(*)");
+			if (isExisting == 0) {
+				System.out.println("User does not exist");
+				return false;
+
+			}
+			return true;
+
+		} catch (Exception e) {
+			throw new UserException("Unable to check username. Try again.", e);
 		}
 	}
 
