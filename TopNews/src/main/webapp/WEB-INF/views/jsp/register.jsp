@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title><spring:message code="register" text="default text" /></title>
+<title><spring:message code="register" text="Register" /></title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <jsp:include page="./admin_panel/panel_style.jsp"></jsp:include>
 </head>
@@ -17,7 +17,7 @@
 	<div class="row">
 		<div class="col-lg-12 col-md-12">
 			<div class="latest_newsarea">
-				<span><spring:message code="LatestNews" text="default text" /></span>
+				<span><spring:message code="LatestNews" text="Latest News" /></span>
 				<ul id="ticker01" class="news_sticker">
 					<c:forEach var="latestNews" items="${latestNews}">
 						<li><a href="#"><img src="${latestNews.photoUrl}" alt="">${latestNews.title}</a></li>
@@ -54,13 +54,9 @@
 			<div class="left_content">
 				<div class="contact_area">
 					<div class="single_sidebar">
-						<br>
-						<h2>
-							<span><spring:message code="register" text="default text" /></span>
-						</h2>
+						<h3 style="color: red"><spring:message code="${message}" text="" /></h3><br>
+						<h2><span><spring:message code="register" text="default text" /></span></h2>
 					</div>
-			
-					<h3 style="color: green">${message}</h3>
 					<h4>
 						<span><spring:message code="email" text="default text" />:</span>
 					</h4>
@@ -84,7 +80,7 @@
 		<div class="col-lg-4 col-md-4 col-sm-4">
 			<div class="latest_post">
 				<h2>
-					<span>Popular news</span>
+					<span><spring:message code="PopularNews" text="Popular News" /></span>
 				</h2>
 				<div class="latest_post_container">
 					<div id="prev-button">
@@ -117,9 +113,4 @@
 		</div>
 	</div>
 	</section>
-	<c:if test="${not empty isAdmin}">
-		<jsp:include page="admin_panel/footer.jsp"></jsp:include>
-	</c:if>
-	<c:if test="${empty isAdmin}">
 		<jsp:include page="user_panel/footer.jsp"></jsp:include>
-	</c:if>

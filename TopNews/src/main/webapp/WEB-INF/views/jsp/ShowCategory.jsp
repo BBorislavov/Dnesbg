@@ -25,7 +25,10 @@
 	</c:if>
 	<div class="single_sidebar">
 		<h2>
-			<span>All News in ${name} category</span>
+			<span>
+			<spring:message code="AllNewsIn" text="All news in" /> 
+			<spring:message code="${name}" text="${name}" /> 
+ 			<spring:message code="Category" text="Category" /></span>
 		</h2>
 		<div class="newsSection">
 			<div class="single_page">
@@ -68,12 +71,8 @@
 	<c:forEach var="pages" items="${pages}">
 	<a style="font-size: 40px" href="Category?name=${name}&page=${pages}">${pages}</a>
 	</c:forEach>
-	<c:if test="${not empty isAdmin}">
-		<jsp:include page="admin_panel/footer.jsp"></jsp:include>
-	</c:if>
-	<c:if test="${empty isAdmin}">
 		<jsp:include page="user_panel/footer.jsp"></jsp:include>
-	</c:if>
+
 	<script type="text/javascript">
 		$('.deleteNews').click(function(e) {
 			if (!confirm('Are you sure you want to delete this new ?')) {

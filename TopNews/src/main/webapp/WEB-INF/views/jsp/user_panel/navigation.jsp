@@ -7,14 +7,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
-<script type="text/javascript"
-	src="../../../static/assets/js/jquery.leanModal.min.js"></script>
-<script type="text/javascript"
-	src="../../../static/assets/js/jquery-1.11.0.min.js"></script>
-<link type="text/css" rel="stylesheet"
-	href="../../../static/assets/css/style.css" />
-<link type="text/css" rel="stylesheet"
-	href="../../../static/assets/css/font-awesome.min.css" />
 <body>
 	<section id="navArea"> <nav class="navbar navbar-inverse"
 		role="navigation">
@@ -30,14 +22,14 @@
 		<ul class="nav navbar-nav main_nav">
 			<li class="active"><a href="./"><span
 					class="fa fa-home desktop-home"></span><span class="mobile-show">Home</span></a></li>
-					<li><a href="Category?name=World&page=1"><spring:message code="World" text="default text" /></a></li>
+					<li><a href="Category?name=World&page=1"><spring:message code="World" text="World" /></a></li>
 			<c:forEach var="category" items="${allCategories}">
 				<li class="dropdown"><a href="Category?name=${category.key}&page=1" class="dropdown-toggle"
-					data-toggle="dropdown" role="button" aria-expanded="false"><spring:message code="${category.key}" text="default text" /></a>
+					data-toggle="dropdown" role="button" aria-expanded="false"><spring:message code="${category.key}" text="${category.key}" /></a>
 					<ul class="dropdown-menu" role="menu">
 						<c:forEach var="name" items="${category.value}">
 						<c:if test="${not empty name}">
-							<li><a href="Category?name=${name}&page=1"><spring:message code="${name}" text="default text" /></a></li>
+							<li><a href="Category?name=${name}&page=1"><spring:message code="${name}" text="${name}" /></a></li>
 						</c:if>
 						<c:if test="${empty name}">
 							<li><a href="Category?name=${category.key}&page=1">${category.key}</a></li>

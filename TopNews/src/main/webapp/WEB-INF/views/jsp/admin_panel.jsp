@@ -17,4 +17,4 @@
  <span><a  href="UnreadedAlerts"><i style="color: red" class="fa fa-folder-o"> unreaded (${unreaded})</color></i></a></span> 
    <span><a  href="ReadedAlerts"><i style="color: green" class="fa fa-folder-open-o"> readed(${readed})</color></i></a></span>
   <h3>Welcome, ${user.username}.</h3>
- <jsp:include page="admin_panel/footer.jsp"></jsp:include>
+ <jsp:include page="user_panel/footer.jsp"></jsp:include>

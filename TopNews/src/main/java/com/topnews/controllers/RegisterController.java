@@ -27,15 +27,21 @@ public class RegisterController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String register(@Valid @ModelAttribute User user, Model model, HttpSession httpSession) {
 		try { 
+			List<INews> popularNews = NewsDAO.showAllNews("rating");
+			List<INews> latestNews = NewsDAO.showAllNews("date");
+			model.addAttribute("latestNews", latestNews);
+			model.addAttribute("popularNews", popularNews);
+			Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
+			model.addAttribute("allCategories", allCategories);
 			if (UserDAO.isUserExisting(user)) {
-				model.addAttribute("message", "This account already exists");
+				model.addAttribute("message", "accountExists");
 				return "register";
 			} else {
 				if (UserDAO.registerUser(user)) {
 					httpSession.setAttribute("user", user);
 					return "redirect:./";
 				}
-				model.addAttribute("message", "Failed to register");
+				model.addAttribute("message", "registerFailed");
 				return "register";
 			}
 		} catch (Exception e) {

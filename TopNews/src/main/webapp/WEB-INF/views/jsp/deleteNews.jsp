@@ -31,5 +31,5 @@
 			</div>
 		</div>
 		</section>
-		<jsp:include page="admin_panel/footer.jsp"></jsp:include>
+		<jsp:include page="user_panel/footer.jsp"></jsp:include>
 	

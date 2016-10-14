@@ -73,10 +73,5 @@
       </div>
     </div>
   </section>
- <c:if test="${not empty isAdmin}">
-<jsp:include page="admin_panel/footer.jsp"></jsp:include>
- </c:if>
- <c:if test="${empty isAdmin}">
  <jsp:include page="user_panel/footer.jsp"></jsp:include>
- </c:if>
 

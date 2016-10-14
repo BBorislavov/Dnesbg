@@ -45,7 +45,7 @@ public class NewsDAO extends AbstractDAO {
 	private static final String SHOW_NEWS_FROM_SUBCATEGORY = "SELECT n.id, n.rating, p.url, n.title, n.text, n.date FROM news n"
 			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " LEFT OUTER JOIN (news_db.photos p)"
-			+ " ON (n.id=p.news_id)" + " WHERE c.name=?;";
+			+ " ON (n.id=p.news_id)" + " WHERE c.name=? ORDER BY n.date DESC;";
 	private static final String COUNT_NEWS_FROM_SUBCATEGORY = "SELECT COUNT(*) FROM news n JOIN news_has_categories nc"
 			+ " ON (n.id = nc.news_id) JOIN categories c ON (c.subcategory_id = nc.subcategory_id) WHERE c.name = ?;";
 	private static final String SHOW_LAST_NEWS_FROM_SUBCATEGORY = "SELECT n.id, n.rating, p.url, n.title, n.date, c.name FROM news_db.news n"
@@ -65,7 +65,7 @@ public class NewsDAO extends AbstractDAO {
 			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " JOIN (news_db.photos p) ON (n.id=p.news_id) ORDER BY n.";
 	private static final String DESCENDING = " DESC LIMIT 5;";
-	private static final String CHECK_FOR_EXISTING = "SELECT COUNT(*) FROM news WHERE title = ? AND text = ?";
+	private static final String CHECK_FOR_EXISTING = "SELECT COUNT(*) FROM news WHERE (title = ? AND text = ?) OR (title = ? AND date = ?)";
 
 	public static void addNews(INews news, String category, String photoUrl) throws NewsException, ConnectionException {
 
@@ -449,10 +449,13 @@ public class NewsDAO extends AbstractDAO {
 
 			String title = news.getTitle();
 			String text = news.getText();
+			String date = news.getDateOfPost().substring(0, news.getDateOfPost().length()-1);
 
 			PreparedStatement statement = connection.prepareStatement(CHECK_FOR_EXISTING);
 			statement.setString(1, title);
 			statement.setString(2, text);
+			statement.setString(3, title);
+			statement.setString(4, date);
 
 			ResultSet resultSetNews = statement.executeQuery();
 			resultSetNews.next();

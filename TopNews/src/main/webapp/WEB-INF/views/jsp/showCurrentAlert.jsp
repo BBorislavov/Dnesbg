@@ -47,4 +47,4 @@
 			</div>
 		</div>
 	</div>
-<jsp:include page="admin_panel/footer.jsp"></jsp:include>
+<jsp:include page="user_panel/footer.jsp"></jsp:include>

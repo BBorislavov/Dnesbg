@@ -13,8 +13,8 @@
 						<ul class="top_nav">
 							<c:choose>
 								<c:when test="${not empty sessionScope.isAdmin}">
-									<li><a href="AdminPanel">Admin Panel</a></li>
-									<li><a href="Logout">Logout</a></li>
+									<li><a href="AdminPanel"><spring:message code="AdminPanel" text="Admin Panel" /></a></li>
+									<li><a href="Logout"><spring:message code="logout" text="Logout" /></a></li>
 								</c:when>
 								<c:when test="${not empty sessionScope.user}">
 
@@ -33,23 +33,17 @@
 								src="http://free.timeanddate.com/clock/i5etg7b8/n238/tluk/fn9/fs16/fcfff/tct/pct/ahr/avt/tt0/tw1"
 								frameborder="0" width="256" height="20" allowTransparency="true"></iframe>
 						</h3>
-						<%--<%
-							if (session.getAttribute("user") != null) {
-						%>
-						<p style="font-size: 15px">Welcome, you are logged as
-							${user.username}</p>
-						<%}%>--%>
 					</div>
 				</div>
 			</div>
 			<div class="col-lg-12 col-md-12 col-sm-12">
 				<div class="header_bottom">
 					<div class="logo_area">
-						<a href="./AdminPanel" class="logo"><img
+						<a href="./" class="logo"><img
 							src="./images/topNewsLogo.png" alt=""></a>
 							<%--<a href="?language=bg"><img height="15%" width="15%" src="./images/bg-flag.png"></a>--%>
-							<a href="?language=en"><img height="14%" width="14%" src="./images/en-flag.png"></a>
-							<a href="?language=es"><img height="14%" width="14%" src="./images/es-flag.png"></a>
+							<a href="./Language?language=en"><img height="14%" width="14%" src="./images/en-flag.png"></a>
+							<a href="./Language?language=es"><img height="14%" width="14%" src="./images/es-flag.png"></a>
 					</div>
 					<div class="add_banner">
 						<a href="#"><img src="./images/top_news_banner.png" alt=""></a>

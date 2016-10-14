@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Top News: ${category}</title>
+<title><spring:message code="${category}" text="category" /></title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <jsp:include page="admin_panel/panel_style.jsp"></jsp:include>
 </head>
@@ -25,7 +25,7 @@
 	<div class="row">
 	<div class="col-lg-12 col-md-12">
 			<div class="latest_newsarea">
-				<span>Latest News</span>
+				<span><spring:message code="LatestNews" text="category" /></span>
 				<ul id="ticker01" class="news_sticker">
 				 <c:forEach var="latestNews" items="${latestNews}">
 					<li><a href="#"><img src="${latestNews.photoUrl}"
@@ -51,8 +51,8 @@
 			<br>
 				<div class="single_page">
 					<ol class="breadcrumb">
-							<li><a href="./">Home</a></li>
-						<li><a href="Category?name=${category}">${category}</a></li>
+							<li><a href="./"><spring:message code="Home" text="default text" /></a></li>
+						<li><a href="Category?name=${category}"><spring:message code="${category}" text="default text" /></a></li>
 					</ol>
 					<h1>${news.title}</h1>
 					<div class="post_commentbox">
@@ -71,9 +71,8 @@
 						<form:form id="form" action="AddComment" class="contact_form"
 							commandName="comment">
 							<form:textarea id="newComment" path="text" class="form-control"
-								type="text" cols="30" rows="10"
-								placeholder="Enter your comment*" />
-							<input type="submit" id="add-comment" value="Send" />
+								type="text" cols="30" rows="10"/>
+							<input type="submit" id="add-comment" value="<spring:message code="Comment" text="Comment" />" />
 						</form:form>
 						<br>
 					</div>
@@ -95,7 +94,10 @@
 			<div class="single_sidebar">
 			<br>
 				<h2>
-					<span>Latest News in ${category}</span>
+					<span>
+					<spring:message code="LatestNewsIn" text="Latest news in" />
+					<spring:message code="${category}" text="category" />
+					</span>
 				</h2>
 				<c:forEach var="lastNews" items="${lastNews}">
 					<ul class="spost_nav">
@@ -119,8 +121,10 @@
 	</div>
 	<input type='hidden' id="currUsername"
 		value="${sessionScope.user.username}" /> <input type='hidden'
-		id="isAdmin" value="${sessionScope.isAdmin}" /> <jsp:include
-		page="admin_panel/footer.jsp"></jsp:include> <script
+		id="isAdmin" value="${sessionScope.isAdmin}" /> 
+
+		<jsp:include page="user_panel/footer.jsp"></jsp:include>
+		<script
 		type="text/javascript">
 			$(document)
 					.ready(

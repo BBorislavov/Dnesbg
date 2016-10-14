@@ -17,7 +17,7 @@
 	<div class="row">
 		<div class="col-lg-12 col-md-12">
 			<div class="latest_newsarea">
-				<span><spring:message code="LatestNews" text="default text" /></span>
+				<span><spring:message code="LatestNews" text="Latest News" /></span>
 				<ul id="ticker01" class="news_sticker">
 					<c:forEach var="latestNews" items="${latestNews}">
 						<li><a href="#"><img src="${latestNews.photoUrl}" alt="">${latestNews.title}</a></li>
@@ -54,15 +54,12 @@
 			<div class="left_content">
 				<div class="contact_area">
 					<div class="single_sidebar">
-						<br>
-						<h2>
-							<span><spring:message code="login" text="default text" /></span>
-						</h2>
+						<h3 style="color: red"><spring:message code="${message}" text="" /></h3><br>
+						<h2><span><spring:message code="login" text="default text" /></span></h2>
 					</div>
 					<h4>
 						<span><spring:message code="username" text="default text" />:</span>
 					</h4>
-					<h3 style="color: green">${message}</h3>
 					<form:form class="contact_form" method="POST" action="Login"
 						commandName="user">
 						<form:input path="username" class="form-control" type="text"
@@ -114,9 +111,4 @@
 		</div>
 	</div>
 	</section>
-	<c:if test="${not empty isAdmin}">
-		<jsp:include page="admin_panel/footer.jsp"></jsp:include>
-	</c:if>
-	<c:if test="${empty isAdmin}">
 		<jsp:include page="user_panel/footer.jsp"></jsp:include>
-	</c:if>

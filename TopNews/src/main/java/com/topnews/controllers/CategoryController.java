@@ -29,8 +29,9 @@ import com.topnews.modelsDAO.UserDAO;
 public class CategoryController {
 
 	@RequestMapping(value = "/Category", method = RequestMethod.GET)
-	public String showNewsInCategory(Model model, HttpSession httpSession, HttpServletRequest req) {
+	public String showNewsInCategory(Model model, HttpSession httpSession, HttpServletRequest request) {
 		try {
+			model.addAttribute("previous", request.getHeader("Referer"));
 			if ((User) httpSession.getAttribute("user") != null) {
 				boolean isAdmin = UserDAO.isAdmin((User) httpSession.getAttribute("user"));
 				if (isAdmin) {
@@ -39,9 +40,9 @@ public class CategoryController {
 			}
 			String name = null;
 			Integer page = 0;
-			if (req.getParameter("name") != null && req.getParameter("page") != null) {
-				name = req.getParameter("name");
-				page = Integer.parseInt(req.getParameter("page"));
+			if (request.getParameter("name") != null && request.getParameter("page") != null) {
+				name = request.getParameter("name");
+				page = Integer.parseInt(request.getParameter("page"));
 				if (CategoryDAO.isCategoryExists(name)) {
 					List<News> worldNews = NewsDAO.getWorldNews();
 					for (int index = 0; index < worldNews.size(); index++) {
@@ -71,16 +72,17 @@ public class CategoryController {
 				} else {
 					model.addAttribute("message",
 							"The category which currently you are trying to access does not exist.");
-					return "error-404";
+					return "forward:/Error";
 				}
 			} else {
-				model.addAttribute("message", "You have entered invalid data.");
-				return "error-404";
+				model.addAttribute("message", "invalidData");
+				return "forward:/Error";
 			}
 
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			return "index";
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
 		} catch (NewsException e) {
 			e.printStackTrace();
 			return "index";
@@ -89,12 +91,12 @@ public class CategoryController {
 			return "login";
 		} catch (CategoryException e) {
 			e.printStackTrace();
-			model.addAttribute("message", "You have entered invalid data.");
-			return "error-404";
+			model.addAttribute("message", "invalidData");
+			return "forward:/Error";
 		} catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("message", "Something went wrong.");
-			return "error-404";
+			model.addAttribute("message", "invalidData");
+			return "forward:/Error";
 		}
 	}
 

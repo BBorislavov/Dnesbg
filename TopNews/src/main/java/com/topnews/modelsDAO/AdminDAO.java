@@ -10,8 +10,9 @@ public class AdminDAO extends AbstractDAO {
 
 	private static final String GIVE_RIGHTS_TO_USER = "UPDATE news_db.users SET is_admin=\"1\" WHERE username=?;";
 	private static final String REMOVE_RIGHTS_TO_USER = "UPDATE news_db.users SET is_admin=\"0\" WHERE username=?;";
-	private static final String DELETE_USER_FROM_COMMENTS = "UPDATE news_db.comments SET user_id=5 WHERE user_id=?;";
+	private static final String DELETE_USER_FROM_COMMENTS = "UPDATE comments SET user_id=5 WHERE user_id=?;";
 	private static final String DELETE_USER = "DELETE FROM news_db.users" + " WHERE username=?;";
+	private static final String DELETE_USER_FROM_EMAILS = "UPDATE emails SET user_id=5 WHERE user_id=?;";
 
 	public static void giveRights(String username) throws ConnectionException, UserException {
 		try {
@@ -47,6 +48,10 @@ public class AdminDAO extends AbstractDAO {
 			PreparedStatement commentStatement = connection.prepareStatement(DELETE_USER_FROM_COMMENTS);
 			commentStatement.setInt(1, userId);
 			commentStatement.executeUpdate();
+			
+			PreparedStatement emailStatement = connection.prepareStatement(DELETE_USER_FROM_EMAILS);
+			emailStatement.setInt(1, userId);
+			emailStatement.executeUpdate();
 			
 			PreparedStatement deleteUserStatement = connection.prepareStatement(DELETE_USER);
 			deleteUserStatement.setString(1, username);

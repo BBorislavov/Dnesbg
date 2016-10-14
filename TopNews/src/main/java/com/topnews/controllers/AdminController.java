@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.topnews.exceptions.ConnectionException;
 import com.topnews.exceptions.NewsException;
+import com.topnews.exceptions.UserException;
 import com.topnews.models.Category;
 import com.topnews.models.User;
 import com.topnews.modelsDAO.AdminDAO;
@@ -53,7 +54,8 @@ public class AdminController {
 				AdminDAO.giveRights(user.getUsername());
 				List<String> categories = CategoryDAO.showAllCategories();
 				model.addAttribute("categories", categories);
-				model.addAttribute("message", "Successfully added rights to " + user.getUsername());
+				model.addAttribute("message", "Successfully added rights to ");
+				model.addAttribute("username", user.getUsername());
 				return "addUserRights";
 			} else {
 				model.addAttribute("notAdmin", "You are not admin!");
@@ -119,23 +121,41 @@ public class AdminController {
 			Model model, HttpSession httpSession) {
 		try {
 			User currentlyLoggedUser = (User) httpSession.getAttribute("user");
-			if (!currentlyLoggedUser.getUsername().equals(user.getUsername())) {
-				if (UserDAO.isAdmin(currentlyLoggedUser)) {
-					AdminDAO.deleteUser(user.getUsername());
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
-					model.addAttribute("message", "Successfully deleted " + user.getUsername());
-					return "deleteUser";
-				} else {
-					model.addAttribute("notAdmin", "You are not admin!");
-					return "index";
+			if (currentlyLoggedUser != null) {
+				if (!currentlyLoggedUser.getUsername().equals(user.getUsername())) {
+					if (UserDAO.isAdmin(currentlyLoggedUser)) {
+						AdminDAO.deleteUser(user.getUsername());
+						List<String> categories = CategoryDAO.showAllCategories();
+						model.addAttribute("categories", categories);
+						model.addAttribute("message", "Successfully deleted " + user.getUsername());
+						return "deleteUser";
+					} else {
+						model.addAttribute("notAdmin", "You are not admin!");
+						return "index";
+					}
 				}
+				model.addAttribute("error", "You cannot delete yourself");
+				return "deleteUser";
+			} else {
+				model.addAttribute("message", "You are not currently logged.");
+				return "login";
 			}
-			model.addAttribute("error", "You cannot delete yourself");
-			return "deleteUser";
+		} catch (UserException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "You are not currently logged.");
+			return "login";
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "Server maintenance. Try again in few seconds.");
+			return "error-404";
+		} catch (NewsException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "Failed to load news. Please try again in few seconds");
+			return "error-404";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "redirect:/pages/404.html";
+			model.addAttribute("message", "Server maintenance. Try again in few seconds");
+			return "error-404";
 		}
 	}
 

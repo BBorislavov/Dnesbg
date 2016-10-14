@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Remove Rights</title>
+<title><spring:message code="RemRights" text="Add user rights" /></title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <jsp:include page="admin_panel/panel_style.jsp"></jsp:include>
 </head>
@@ -20,17 +20,17 @@
 		<div class="col-lg-7 col-md-7 col-sm-7">
 			<div class="left_content">
 				<div class="contact_area">
-					<h2>Remove User Rights</h2>
+					<h2><spring:message code="RemRights" text="Add user rights" /></h2>
 					<br /> 
-					<h3 style="color: green">${message}</h3>
+					<h3 style="color: red">${message}</h3>
+					<h4><spring:message code="enterUsername" text="Add user rights" />:</h4>
 					<form:form class="contact_form" method="POST" action="RemoveUserRights" commandName="user">
-						<form:input path="username" class="form-control" type="text"
-							placeholder="Enter username to give admin rights.*" />
-						<input type="submit" value="Remove Rights">
+						<form:input path="username" class="form-control" type="text"/>
+						<input type="submit" value="<spring:message code="removeRights" text="Remove rights" />">
 					</form:form>
 				</div>
 			</div>
 		</div>
 	</div>
 	</section>
-	<jsp:include page="admin_panel/footer.jsp"></jsp:include>
+	<jsp:include page="user_panel/footer.jsp"></jsp:include>

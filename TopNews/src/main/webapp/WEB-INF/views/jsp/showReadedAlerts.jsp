@@ -43,12 +43,7 @@
 			</div>
 		</div>
 	</div>
-	<c:if test="${not empty isAdmin}">
-		<jsp:include page="admin_panel/footer.jsp"></jsp:include>
-	</c:if>
-	<c:if test="${empty isAdmin}">
-		<jsp:include page="user_panel/footer.jsp"></jsp:include>
-	</c:if>
+<jsp:include page="user_panel/footer.jsp"></jsp:include>
 	<script type="text/javascript">
 		$('.deleteNews').click(function(e) {
 			if (!confirm('Are you sure you want to delete this new ?')) {

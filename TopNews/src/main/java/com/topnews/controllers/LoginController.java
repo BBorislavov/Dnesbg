@@ -22,7 +22,8 @@ import com.topnews.modelsDAO.UserDAO;
 
 @Controller
 public class LoginController {
-
+	
+	private static final String SERVER_LOGIN_PATH = "http://localhost:8080/TopNews/Login";
 	private static final int FIFTHEEN_MINUTES = 60 * 15;
 
 	@RequestMapping(value = "/Login", method = RequestMethod.POST)
@@ -38,7 +39,7 @@ public class LoginController {
 					httpSession.setMaxInactiveInterval(FIFTHEEN_MINUTES);
 					if ((String) httpSession.getAttribute("referer") != null) {
 						String referer = (String) httpSession.getAttribute("referer");
-						if (!referer.equals("http://localhost:8080/TopNews/Login")) {
+						if (!referer.equals(SERVER_LOGIN_PATH)) {
 							return "redirect:" + referer;
 						} else {
 							return "redirect:/";
@@ -48,7 +49,15 @@ public class LoginController {
 					}
 				}
 			}
-			model.addAttribute("message", "Invalid username or password");
+			List<INews> allNews = NewsDAO.showAllNews();
+			List<INews> popularNews = NewsDAO.showAllNews("rating");
+			List<INews> latestNews = NewsDAO.showAllNews("date");
+			model.addAttribute("latestNews", latestNews);
+			model.addAttribute("popularNews", popularNews);
+			model.addAttribute("allNews", allNews);
+			Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
+			model.addAttribute("allCategories", allCategories);
+			model.addAttribute("message", "invalidLogin");
 			return "login";
 		} catch (Exception e) {
 			return "login";
@@ -94,8 +103,44 @@ public class LoginController {
 		} catch (NewsException e) {
 			e.printStackTrace();
 		}
-		//Global hendler
+		// Global hendler
 		return "index";
 	}
+	
+	@RequestMapping(value = "/Language", method = RequestMethod.GET)
+	public String language(HttpServletRequest request) {
+		if (request.getHeader("Referer")!=null){
+		String referer = request.getHeader("Referer");
+		return "redirect:"+referer;
+		} else {
+			return "redirect:/";
+		}
+	}
+	
+	@RequestMapping(value = "/Error", method = RequestMethod.GET)
+	public String error(Model model) {
+		List<INews> allNews;
+		try {
+			allNews = NewsDAO.showAllNews();
+			List<INews> popularNews = NewsDAO.showAllNews("rating");
+			List<INews> latestNews = NewsDAO.showAllNews("date");
+			model.addAttribute("latestNews", latestNews);
+			model.addAttribute("popularNews", popularNews);
+			model.addAttribute("allNews", allNews);
+			Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
+			model.addAttribute("allCategories", allCategories);
+			return "error-404";
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+		} catch (NewsException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "redirect:/";
+		
+	}
+	
+	
 
 }
