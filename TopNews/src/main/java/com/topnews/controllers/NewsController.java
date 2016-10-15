@@ -34,7 +34,7 @@ public class NewsController {
 	private static final int ANONYMOUS_USER = 4;
 	public static final String LOCATION = "D:\\news_images\\";
 	public static final String SERVER_IMAGES_PATH = "./news_images/";
-	public static final String SERVER_DEFAULT_IMAGE = "./news_images/alert-001.jpg";
+	public static final String SERVER_DEFAULT_IMAGE = "./news_images/icon-default-news.png";
 
 	@RequestMapping(value = "/AddNews", method = RequestMethod.POST)
 	public String AddNews(@ModelAttribute News news, @RequestParam("photoUrl") MultipartFile multipartFile,

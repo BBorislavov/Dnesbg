@@ -27,8 +27,10 @@
       <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="header_bottom">
           <div class="logo_area"><a href="./AdminPanel" class="logo"><img src="./images/topNewsLogo.png" alt=""></a>
-          <a href="./Language?language=en"><img height="14%" width="14%" src="./images/en-flag.png"></a>
-							<a href="./Language?language=es"><img height="14%" width="14%" src="./images/es-flag.png"></a></div>
+							<a href="./Language?language=en"><img width="13%" src="./images/en-flag.png"></a>
+							<a href="./Language?language=de"><img width="13%" src="./images/de-flag.png"></a>
+							<a href="./Language?language=es"><img width="13%" src="./images/es-flag.png"></a>
+							<a href="./Language?language=es"><img width="13%" src="./images/fr-flag.png"></a></div>
           <div class="add_banner"><a href="#"><img src="./images/banner.jpg" alt=""></a></div>
         </div>
       </div>

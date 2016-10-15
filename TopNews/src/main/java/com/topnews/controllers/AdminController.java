@@ -63,10 +63,12 @@ public class AdminController {
 						httpSession.setAttribute("categories", categories);
 						httpSession.setAttribute("message", "SuccesAddRights");
 						httpSession.setAttribute("username", user.getUsername());
+						httpSession.removeAttribute("error");
 						return "addUserRights";
 					}
 					httpSession.setAttribute("error", "unexistingUser");
 					httpSession.removeAttribute("username");
+					httpSession.removeAttribute("message");
 					return "addUserRights";
 				}
 				httpSession.setAttribute("message", "notFoundPage");

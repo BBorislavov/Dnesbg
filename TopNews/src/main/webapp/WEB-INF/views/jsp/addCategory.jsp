@@ -27,7 +27,7 @@
 						<form:select path="name" class="form-control" type="text">
 						<option value=""><spring:message code="newCategory" text="New Category" /></option>
 							<c:forEach var="categories" items="${categories}">
-								<option value="${categories}"><spring:message code="${categories}" text="Category" /></option>
+								<option value="${categories}"><spring:message code="${categories}" text="${categories}" /></option>
 							</c:forEach>
 						</form:select>
 						<h4><span><spring:message code="subCategory" text="Subcategory" />:</span></h4>

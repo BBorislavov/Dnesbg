@@ -44,8 +44,10 @@ public class CategoryController {
 				name = request.getParameter("name");
 				page = Integer.parseInt(request.getParameter("page"));
 				if (CategoryDAO.isCategoryExists(name)) {
+					NewsDAO.clearWorldCategory();
 					List<News> worldNews = NewsDAO.getWorldNews();
-					for (int index = 0; index < worldNews.size(); index++) {
+					int sizeOfWorldCategory = worldNews.size();
+					for (int index = 0; index < sizeOfWorldCategory; index++) {
 						News currentNews = worldNews.get(index);
 						NewsDAO.addWorldNews(currentNews);
 					}
@@ -112,9 +114,10 @@ public class CategoryController {
 					model.addAttribute("categories", categories);
 					model.addAttribute("message", "successAddCategory");
 					return "addCategory";
+				} else {
+					httpSession.setAttribute("message", "notFoundPage");
+					return "forward:/Error";
 				}
-				httpSession.setAttribute("message", "notFoundPage");
-				return "forward:/Error";
 			}
 			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
@@ -146,12 +149,15 @@ public class CategoryController {
 					model.addAttribute(new Category());
 					List<String> categories = CategoryDAO.showAllCategories();
 					model.addAttribute("categories", categories);
+					return "addCategory";
 				}
 				httpSession.setAttribute("message", "notFoundPage");
 				return "forward:/Error";
+
 			}
 			httpSession.setAttribute("message", "notFoundPage");
 			return "redirect:/Error";
+
 		} catch (ConnectionException e) {
 			e.printStackTrace();
 			model.addAttribute("message", "serverMaintenance");
@@ -216,6 +222,7 @@ public class CategoryController {
 					model.addAttribute(new Category());
 					List<String> categories = CategoryDAO.showAllCategories();
 					model.addAttribute("categories", categories);
+					return "deleteCategory";
 				}
 				httpSession.setAttribute("message", "notFoundPage");
 				return "forward:/Error";

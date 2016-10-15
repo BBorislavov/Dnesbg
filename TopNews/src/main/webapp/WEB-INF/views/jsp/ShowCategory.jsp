@@ -38,8 +38,6 @@
 							<a href="./News?category=${name}&id=${listCategory.id}">${listCategory.title}
 							</a>
 							<c:if test="${not empty isAdmin}">
-							<i class="fa fa-arrow-up" aria-hidden="true"></i>
-							<i class="fa fa-arrow-down" aria-hidden="true"></i>
 							<a style = "color: red" class="deleteNews" href="./DeleteNews?id=${listCategory.id}">
 							<i class="fa fa-times" aria-hidden="true"></i>
 							</a>
@@ -75,7 +73,7 @@
 
 	<script type="text/javascript">
 		$('.deleteNews').click(function(e) {
-			if (!confirm('Are you sure you want to delete this new ?')) {
+			if (!confirm('Are you sure you want to delete this news?')) {
 				e.preventDefault();
 			}
 

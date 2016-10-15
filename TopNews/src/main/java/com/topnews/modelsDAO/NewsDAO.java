@@ -33,7 +33,6 @@ public class NewsDAO extends AbstractDAO {
 	private static final int NUMBER_OF_NEWS_IN_ONE_PAGE = 10;
 	private static final String DEFAULT_TITLE = "No title";
 	private static final String DEFAULT_TEXT = "No text";
-	private static final String BLANK_DATE_TIME = "2016-10-12 06:34:28";
 	private static final String DEFAULT_IMAGE_URL = "./news_images/icon-default-news.png";
 	private static final String INSERT_NEWS_IN_CATEGORY = "INSERT INTO news_db.news_has_categories VALUES(?,?);";
 	private static final String INSERT_PHOTO = "INSERT INTO news_db.photos VALUES(null,?, null, ?);";
@@ -65,10 +64,11 @@ public class NewsDAO extends AbstractDAO {
 			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " JOIN (news_db.photos p) ON (n.id=p.news_id) ORDER BY n.";
 	private static final String DESCENDING = " DESC LIMIT 5;";
-	private static final String CHECK_FOR_EXISTING = "SELECT COUNT(*) FROM news WHERE (title = ? AND text = ?) OR (title = ? AND date = ?)";
+	private static final String CHECK_FOR_EXISTING = "SELECT COUNT(*) FROM news WHERE (title = ? AND text = ?) OR (title = ? AND date = ?) OR (text = ? AND date = ?);";
+	private static final String GET_OLD_WORLD_NEWS = "SELECT id FROM news n JOIN news_has_categories nc ON (nc.news_id = n.id) JOIN categories c"
+			+ " ON (nc.subcategory_id = c.subcategory_id) WHERE c.name='WORLD' AND date<?;";
 
 	public static void addNews(INews news, String category, String photoUrl) throws NewsException, ConnectionException {
-
 		try {
 			String title = news.getTitle();
 			String text = news.getText();
@@ -127,37 +127,37 @@ public class NewsDAO extends AbstractDAO {
 		}
 	}
 
-//	public static List<News> showNewsInSubcategory(String subcategoryName) throws ConnectionException, NewsException {
-//
-//		try {
-//			PreparedStatement statement = connection.prepareStatement(SHOW_NEWS_FROM_SUBCATEGORY);
-//			statement.setString(1, subcategoryName);
-//			ResultSet resultSet = statement.executeQuery();
-//			List<News> newsInSubcategory = new ArrayList<News>();
-//			while (resultSet.next()) {
-//				String url = resultSet.getString("p.url");
-//				String title = resultSet.getString("n.title");
-//				String date = resultSet.getString("n.date");
-//				String fullText = resultSet.getString("n.text");
-//				int rating = resultSet.getInt("n.rating");
-//				int countSize = 0;
-//				for (int index = 0; index < fullText.length(); index++) {
-//					if (fullText.charAt(index) != '.') {
-//						countSize++;
-//					} else {
-//						break;
-//					}
-//				}
-//				String text = fullText.substring(0, countSize) + "...";
-//				int id = resultSet.getInt("n.id");
-//				News news = new News(title, text, url, date, id, subcategoryName, rating);
-//				newsInSubcategory.add(news);
-//			}
-//			return Collections.unmodifiableList(newsInSubcategory);
-//		} catch (Exception e) {
-//			throw new NewsException("Failed to show news.", e);
-//		}
-//	}
+	public static void clearWorldCategory() throws ConnectionException, UserException {
+
+		try {
+			PreparedStatement idStatement = connection.prepareStatement(GET_OLD_WORLD_NEWS);
+			String fiveDaysPeriod = LocalDateTime.now().minusDays(5).toString();
+			idStatement.setString(1, fiveDaysPeriod);
+			ResultSet resultSetNews = idStatement.executeQuery();
+			int numberOfDeleted = 0;
+			while (resultSetNews.next()) {
+				numberOfDeleted++;
+				int newsId = resultSetNews.getInt(1);
+				PreparedStatement photoStatement = connection.prepareStatement(DELETE_PHOTO);
+				photoStatement.setInt(1, newsId);
+				photoStatement.executeUpdate();
+
+				PreparedStatement categoryStatement = connection.prepareStatement(DELETE_NEWS_FROM_CATEGORY);
+				categoryStatement.setInt(1, newsId);
+				categoryStatement.executeUpdate();
+
+				PreparedStatement newsStatement = connection.prepareStatement(DELETE_NEWS);
+				newsStatement.setInt(1, newsId);
+				newsStatement.executeUpdate();
+			}
+			System.err.print(numberOfDeleted + " news has been deleted. ");
+			if (numberOfDeleted==0){
+				System.err.println("There is no older news by " + fiveDaysPeriod);
+			}
+		} catch (SQLException e) {
+			throw new UserException("Failed to delete news", e);
+		}
+	}
 
 	public static int getNumberOfPages(String subcategoryName) throws ConnectionException, NewsException {
 
@@ -382,7 +382,7 @@ public class NewsDAO extends AbstractDAO {
 					if (!singleNews.get("publishedAt").isJsonNull()) {
 						date = singleNews.get("publishedAt").getAsString();
 					} else {
-						date = BLANK_DATE_TIME;
+						date = LocalDateTime.now().toString();
 					}
 
 					worldNews.add(new News(title, text, photoUrl, date, 0, "World", 0));
@@ -449,13 +449,18 @@ public class NewsDAO extends AbstractDAO {
 
 			String title = news.getTitle();
 			String text = news.getText();
-			String date = news.getDateOfPost().substring(0, news.getDateOfPost().length()-1);
+			String date = news.getDateOfPost().substring(0, news.getDateOfPost().length() - 1);
 
 			PreparedStatement statement = connection.prepareStatement(CHECK_FOR_EXISTING);
+			//CHECK BY TITLE AND TEXT
 			statement.setString(1, title);
 			statement.setString(2, text);
+			//CHECK BY TITLE AND DATE
 			statement.setString(3, title);
 			statement.setString(4, date);
+			//CHECK BY TEXT AND DATE
+			statement.setString(5, text);
+			statement.setString(6, date);
 
 			ResultSet resultSetNews = statement.executeQuery();
 			resultSetNews.next();

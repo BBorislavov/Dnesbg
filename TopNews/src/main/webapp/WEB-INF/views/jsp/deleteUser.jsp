@@ -20,12 +20,13 @@
 		<div class="col-lg-7 col-md-7 col-sm-7">
 			<div class="left_content">
 				<div class="contact_area">
+					<h2><spring:message code="DeleteUser" text="Delete User" /></h2>
 					<h3 style="color: green"><spring:message code="${message}" text="" /> ${username}</h3>
 					<h3 style="color: red"><spring:message code="${error}" text="" /></h3><br>
 					<h4><spring:message code="enterUsername" text="Remove rights" /></h4>
 					<form:form class="contact_form" method="POST" action="DeleteUser" commandName="user">
 						<form:input path="username" class="form-control" type="text"/>
-						<input type="submit" value="<spring:message code="Delete" text="Remove rights" />">
+						<input class="deleteUser" type="submit" value="<spring:message code="Delete" text="Remove rights" />">
 					</form:form>
 				</div>
 			</div>
@@ -33,3 +34,11 @@
 	</div>
 	</section>
 	<jsp:include page="user_panel/footer.jsp"></jsp:include>
+	<script type="text/javascript">
+		$('.deleteUser').click(function(e) {
+			if (!confirm('Are you sure you want to delete this user?')) {
+				e.preventDefault();
+			}
+
+		});
+	</script>

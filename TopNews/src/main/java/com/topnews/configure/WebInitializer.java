@@ -43,6 +43,8 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
 		return multipartConfigElement;
 	}
 	
+	
+	
 	public static final String LOCATION = "D:\\news_images\\";
 	 
     private static final long MAX_FILE_SIZE = 31457280; // 30MB

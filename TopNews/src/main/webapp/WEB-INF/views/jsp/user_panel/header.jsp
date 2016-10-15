@@ -28,7 +28,7 @@
 					</div>
 					<div class="header_top_right">
 						<h3>
-							<iframe
+							<iframe onclick="dispatchEvent(event)"
 								src="http://free.timeanddate.com/clock/i5etg7b8/n238/tluk/fn9/fs16/fcfff/tct/pct/ahr/avt/tt0/tw1"
 								frameborder="0" width="256" height="20" allowTransparency="true"></iframe>
 						</h3>
@@ -40,9 +40,10 @@
 					<div class="logo_area">
 						<a href="./" class="logo"><img
 							src="./images/topNewsLogo.png" alt=""></a>
-							<%--<a href="?language=bg"><img height="15%" width="15%" src="./images/bg-flag.png"></a>--%>
-							<a href="./Language?language=en"><img height="14%" width="14%" src="./images/en-flag.png"></a>
-							<a href="./Language?language=es"><img height="14%" width="14%" src="./images/es-flag.png"></a>
+							<a href="./Language?language=en"><img width="13%" src="./images/en-flag.png"></a>
+							<a href="./Language?language=de"><img width="13%" src="./images/de-flag.png"></a>
+							<a href="./Language?language=es"><img width="13%" src="./images/es-flag.png"></a>
+							<a href="./Language?language=es"><img width="13%" src="./images/fr-flag.png"></a>
 					</div>
 					<div class="add_banner">
 						<a href="#"><img src="./images/top_news_banner.png" alt=""></a>
