@@ -21,8 +21,7 @@
 			<div class="left_content">
 				<div class="contact_area">
 					<h2><spring:message code="addCategory" text="Add Category" /></h2>
-					<br> 
-					<h3 style="color: green">${message}</h3>
+					<h3 style="color: green"><spring:message code="${message}" text="" /></h3><br> 
 					<form:form class="contact_form" method="POST" action="AddCategory" commandName="category">
 					<h4><span><spring:message code="mainCategory" text="Main category" />:</span></h4>
 						<form:select path="name" class="form-control" type="text">

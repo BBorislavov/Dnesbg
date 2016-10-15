@@ -48,8 +48,7 @@
           <div class="error_page">
             <h3>We Are Sorry</h3>
             <h1>404</h1>
-            <h3 style="color: red"><spring:message code="${message}" text="" /></h3>
-            <br>
+            <h3 style="color: red"><spring:message code="${message}" text="" /></h3><br>
             <span></span> <a href="./" class="wow fadeInLeftBig">Go to home page</a> </div>
         </div>
       </div>

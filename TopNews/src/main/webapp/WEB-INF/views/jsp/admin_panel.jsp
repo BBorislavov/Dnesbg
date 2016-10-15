@@ -14,7 +14,7 @@
  <jsp:include page="admin_panel/navigation.jsp">
  <jsp:param value="${categories}" name="categories"/>
  </jsp:include>
- <span><a  href="UnreadedAlerts"><i style="color: red" class="fa fa-folder-o"> unreaded (${unreaded})</color></i></a></span> 
-   <span><a  href="ReadedAlerts"><i style="color: green" class="fa fa-folder-open-o"> readed(${readed})</color></i></a></span>
-  <h3>Welcome, ${user.username}.</h3>
+ <span><a  href="UnreadedAlerts"><i style="color: red; font-weight: bold;" class="fa fa-folder-o"> <spring:message code="unreaded" text="unreaded" /> (${unreaded})</color></i></a></span> 
+   <span><a  href="ReadedAlerts"><i style="color: green; font-weight: bold;" class="fa fa-folder-open-o"> <spring:message code="readed" text="readed" /> (${readed})</color></i></a></span>
+  <h3><spring:message code="Welcome" text="Welcome" />, ${user.username}</h3>
  <jsp:include page="user_panel/footer.jsp"></jsp:include>

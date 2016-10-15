@@ -17,8 +17,7 @@
 									<li><a href="Logout"><spring:message code="logout" text="Logout" /></a></li>
 								</c:when>
 								<c:when test="${not empty sessionScope.user}">
-
-									<li><a href="Logout">Logout</a></li>
+									<li><a href="Logout"><spring:message code="logout" text="Logout" /></a></li>
 								</c:when>
 								<c:otherwise>
 									<li><a id="modal_trigger" href="Register"><spring:message code="register" text="default text" /></a></li>

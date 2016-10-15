@@ -7,8 +7,8 @@
 				<div class="footer_widget wow fadeInLeftBig">
 					<h2><spring:message code="Welcome" text="default text" /></h2>
 					<p><spring:message code="Hello" text="default text" />, 
-					<c:if test="${not empty user.username}">${user.username}.</c:if>
-					<c:if test="${empty user.username}"><spring:message code="guest" text="default text"/>.</c:if>
+					<c:if test="${not empty user.username}">${user.username}<c:if test="${not empty sessionScope.isAdmin}"> (<spring:message code="Administrator" text="Administrator"/>)</c:if>.</c:if>
+					<c:if test="${empty user.username}"><spring:message code="guest" text="guest"/>.</c:if>
 					</p>
 					<br>
 					<p style="text-align: justify;"><spring:message code="WelcomeText" text="defsault text" /></p>

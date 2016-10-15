@@ -70,8 +70,7 @@ public class CategoryController {
 					model.addAttribute("categories", categories);
 					return "showCategory";
 				} else {
-					model.addAttribute("message",
-							"The category which currently you are trying to access does not exist.");
+					model.addAttribute("message", "invalidCategory");
 					return "forward:/Error";
 				}
 			} else {
@@ -85,10 +84,12 @@ public class CategoryController {
 			return "forward:/Error";
 		} catch (NewsException e) {
 			e.printStackTrace();
-			return "index";
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
 		} catch (UserException e) {
 			e.printStackTrace();
-			return "login";
+			model.addAttribute("message", "notLogged");
+			return "forward:/Login";
 		} catch (CategoryException e) {
 			e.printStackTrace();
 			model.addAttribute("message", "invalidData");
@@ -103,68 +104,136 @@ public class CategoryController {
 	@RequestMapping(value = "/AddCategory", method = RequestMethod.POST)
 	public String AddCategory(@ModelAttribute("category") Category category, Model model, HttpSession httpSession) {
 		try {
-			User user = (User) httpSession.getAttribute("user");
-			if (UserDAO.isAdmin(user)) {
-				CategoryDAO.addCategory(category.getName(), category.getSubcategory());
-				List<String> categories = CategoryDAO.showAllCategories();
-				model.addAttribute("categories", categories);
-				model.addAttribute("message", "Successfully added category.");
-				return "addCategory";
+			if ((User) httpSession.getAttribute("user") != null) {
+				User user = (User) httpSession.getAttribute("user");
+				if (UserDAO.isAdmin(user)) {
+					CategoryDAO.addCategory(category.getName(), category.getSubcategory());
+					List<String> categories = CategoryDAO.showAllCategories();
+					model.addAttribute("categories", categories);
+					model.addAttribute("message", "successAddCategory");
+					return "addCategory";
+				}
+				httpSession.setAttribute("message", "notFoundPage");
+				return "forward:/Error";
 			}
+			model.addAttribute("message", "notLogged");
+			return "forward:/Login";
+		} catch (UserException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "notLogged");
+			return "forward:/Login";
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
+		} catch (NewsException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "failedAddCategory");
+			return "forward:/Error";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "redirect:/pages/404.html";
+			model.addAttribute("message", "failedAddCategory");
+			return "forward:/Error";
 		}
-		return "redirect:/pages/404.html";
 	}
 
 	@RequestMapping(value = "/AddCategory", method = RequestMethod.GET)
-	public String showLoggedToAdd(Model model) {
-		model.addAttribute(new Category());
+	public String showLoggedToAdd(Model model, HttpSession httpSession) {
 		try {
-			List<String> categories = CategoryDAO.showAllCategories();
-			model.addAttribute("categories", categories);
+			if ((User) httpSession.getAttribute("user") != null) {
+				User user = (User) httpSession.getAttribute("user");
+				if (UserDAO.isAdmin(user)) {
+					model.addAttribute(new Category());
+					List<String> categories = CategoryDAO.showAllCategories();
+					model.addAttribute("categories", categories);
+				}
+				httpSession.setAttribute("message", "notFoundPage");
+				return "forward:/Error";
+			}
+			httpSession.setAttribute("message", "notFoundPage");
+			return "redirect:/Error";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
 		} catch (NewsException e) {
 			e.printStackTrace();
+			model.addAttribute("message", "failedAddCategory");
+			return "forward:/Error";
+		} catch (UserException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "notLogged");
+			return "forward:/Login";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
 		}
-		return "addCategory";
 	}
 
 	@RequestMapping(value = "/DeleteCategory", method = RequestMethod.POST)
 	public String DeleteCategory(@ModelAttribute("category") Category category, Model model, HttpSession httpSession) {
 		try {
-			User user = (User) httpSession.getAttribute("user");
-
-			if (UserDAO.isAdmin(user)) {
-				CategoryDAO.deleteCategory(category.getSubcategory());
-				List<String> categories = CategoryDAO.showAllCategories();
-				model.addAttribute("categories", categories);
-				model.addAttribute("message", "Successfully deleted category.");
-				return "deleteCategory";
+			if ((User) httpSession.getAttribute("user") != null) {
+				User user = (User) httpSession.getAttribute("user");
+				if (UserDAO.isAdmin(user)) {
+					CategoryDAO.deleteCategory(category.getSubcategory());
+					List<String> categories = CategoryDAO.showAllCategories();
+					model.addAttribute("categories", categories);
+					model.addAttribute("message", "successDeleteCategory");
+					return "deleteCategory";
+				}
+				httpSession.setAttribute("message", "notFoundPage");
+				return "forward:/Error";
 			}
-		} catch (Exception e) {
-			httpSession.setAttribute("errorDelete", "Failed to delete category.");
-			httpSession.setAttribute("messageDelete", null);
+			httpSession.setAttribute("message", "notLogged");
+			return "forward:/Login";
+		} catch (UserException e) {
 			e.printStackTrace();
-			return "redirect:/DeleteCategory";
+			model.addAttribute("message", "notLogged");
+			return "forward:/Login";
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
+		} catch (NewsException e) {
+			e.printStackTrace();
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("message", "failedDeleteCategory");
+			return "forward:/Error";
 		}
-
-		return "redirect:/pages/404.html";
 	}
 
 	@RequestMapping(value = "/DeleteCategory", method = RequestMethod.GET)
-	public String showLoggedToDelete(Model model) {
+	public String showLoggedToDelete(Model model, HttpSession httpSession) {
 		try {
-			model.addAttribute(new Category());
-			List<String> categories = CategoryDAO.showAllCategories();
-			model.addAttribute("categories", categories);
+			if ((User) httpSession.getAttribute("user") != null) {
+				User user = (User) httpSession.getAttribute("user");
+				if (UserDAO.isAdmin(user)) {
+					model.addAttribute(new Category());
+					List<String> categories = CategoryDAO.showAllCategories();
+					model.addAttribute("categories", categories);
+				}
+				httpSession.setAttribute("message", "notFoundPage");
+				return "forward:/Error";
+			}
+			httpSession.setAttribute("message", "notFoundPage");
+			return "forward:/Error";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
 		} catch (NewsException e) {
 			e.printStackTrace();
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
+		} catch (UserException e) {
+			e.printStackTrace();
+			httpSession.setAttribute("message", "notLogged");
+			return "forward:/Login";
 		}
-		return "deleteCategory";
 	}
 }
