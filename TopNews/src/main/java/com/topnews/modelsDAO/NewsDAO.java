@@ -42,6 +42,8 @@ public class NewsDAO extends AbstractDAO {
 	private static final String DELETE_NEWS_FROM_CATEGORY = "DELETE FROM news_db.news_has_categories WHERE news_id = ?;";
 	private static final String DELETE_NEWS = "DELETE FROM news_db.news WHERE id = ?;";
 	private static final String DELETE_PHOTO = "DELETE FROM news_db.photos WHERE news_id = ?;";
+	private static final String DELETE_FROM_COMMENTS = "DELETE FROM comments WHERE news_id = ?;";
+	private static final String DELETE_FROM_FAVOURITES = "DELETE FROM users_has_favourite_news WHERE news_id = ?;";
 	private static final String SHOW_NEWS_FROM_SUBCATEGORY = "SELECT n.id, n.rating, p.url, n.title, n.text, n.date FROM news n"
 			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " LEFT OUTER JOIN (news_db.photos p)"
@@ -69,6 +71,7 @@ public class NewsDAO extends AbstractDAO {
 	private static final String CHECK_FOR_EXISTING = "SELECT COUNT(*) FROM news WHERE (title = ? AND text = ?) OR (title = ? AND date = ?) OR (text = ? AND date = ?);";
 	private static final String GET_OLD_WORLD_NEWS = "SELECT id FROM news n JOIN news_has_categories nc ON (nc.news_id = n.id) JOIN categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id) WHERE c.name='WORLD' AND date<?;";
+	
 
 	public static void addNews(INews news, String category, String photoUrl) throws NewsException, ConnectionException {
 		try {
@@ -112,9 +115,17 @@ public class NewsDAO extends AbstractDAO {
 	public static void deleteNews(int id) throws ConnectionException, UserException {
 
 		try {
+			PreparedStatement favouritesStatement = connection.prepareStatement(DELETE_FROM_FAVOURITES);
+			favouritesStatement.setInt(1, id);
+			favouritesStatement.executeUpdate();
+			
 			PreparedStatement photoStatement = connection.prepareStatement(DELETE_PHOTO);
 			photoStatement.setInt(1, id);
 			photoStatement.executeUpdate();
+			
+			PreparedStatement commentStatement = connection.prepareStatement(DELETE_FROM_COMMENTS);
+			commentStatement.setInt(1, id);
+			commentStatement.executeUpdate();
 
 			PreparedStatement categoryStatement = connection.prepareStatement(DELETE_NEWS_FROM_CATEGORY);
 			categoryStatement.setInt(1, id);
