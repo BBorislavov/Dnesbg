@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: TopNews
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: Zakinhos
+Built-By: Borislav
 Implementation-Vendor-Id: com.topnews
-Build-Jdk: 1.8.0_101
+Build-Jdk: 1.8.0_73
 Created-By: Maven Integration for Eclipse
 Implementation-Vendor: Pivotal Software, Inc.
 
