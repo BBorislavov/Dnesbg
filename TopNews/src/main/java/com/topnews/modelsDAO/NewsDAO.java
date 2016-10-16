@@ -24,20 +24,21 @@ import com.topnews.exceptions.ConnectionException;
 import com.topnews.exceptions.NewsException;
 import com.topnews.exceptions.UserException;
 import com.topnews.models.INews;
+import com.topnews.models.IUser;
 import com.topnews.models.News;
 
 public class NewsDAO extends AbstractDAO {
 
-	private static final int ALL_NEWS_EXCEPT_FIRST = 9;
-	private static final int BONUS_PAGE = 1;
-	private static final int NUMBER_OF_NEWS_IN_ONE_PAGE = 10;
+	public static final int ALL_NEWS_EXCEPT_FIRST = 9;
+	public static final int BONUS_PAGE = 1;
+	public static final int NUMBER_OF_NEWS_IN_ONE_PAGE = 10;
 	private static final String DEFAULT_TITLE = "No title";
 	private static final String DEFAULT_TEXT = "No text";
 	private static final String DEFAULT_IMAGE_URL = "./news_images/icon-default-news.png";
 	private static final String INSERT_NEWS_IN_CATEGORY = "INSERT INTO news_db.news_has_categories VALUES(?,?);";
 	private static final String INSERT_PHOTO = "INSERT INTO news_db.photos VALUES(null,?, null, ?);";
 	private static final String INSERT_NEWS = "INSERT INTO news_db.news VALUES (null,?,?,?, 0)";
-	private static final String GET_NEWS_ID = "SELECT id FROM news_db.news WHERE title = ?;";
+	public static final String GET_NEWS_ID = "SELECT id FROM news WHERE title = ?;";
 	private static final String DELETE_NEWS_FROM_CATEGORY = "DELETE FROM news_db.news_has_categories WHERE news_id = ?;";
 	private static final String DELETE_NEWS = "DELETE FROM news_db.news WHERE id = ?;";
 	private static final String DELETE_PHOTO = "DELETE FROM news_db.photos WHERE news_id = ?;";
@@ -47,6 +48,7 @@ public class NewsDAO extends AbstractDAO {
 			+ " ON (n.id=p.news_id)" + " WHERE c.name=? ORDER BY n.date DESC;";
 	private static final String COUNT_NEWS_FROM_SUBCATEGORY = "SELECT COUNT(*) FROM news n JOIN news_has_categories nc"
 			+ " ON (n.id = nc.news_id) JOIN categories c ON (c.subcategory_id = nc.subcategory_id) WHERE c.name = ?;";
+	private static final String COUNT_NEWS_FROM_FAVOURITES = "SELECT COUNT(*) FROM users_has_favourite_news uf JOIN users u ON (u.id = uf.users_id) WHERE u.username = ?;";
 	private static final String SHOW_LAST_NEWS_FROM_SUBCATEGORY = "SELECT n.id, n.rating, p.url, n.title, n.date, c.name FROM news_db.news n"
 			+ " JOIN news_db.news_has_categories nc" + " ON (n.id=nc.news_id)" + " JOIN news_db.categories c"
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " LEFT OUTER JOIN (news_db.photos p)"
@@ -164,6 +166,27 @@ public class NewsDAO extends AbstractDAO {
 		try {
 			PreparedStatement statement = connection.prepareStatement(COUNT_NEWS_FROM_SUBCATEGORY);
 			statement.setString(1, subcategoryName);
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			int numberOfNews = resultSet.getInt(1);
+			int pages;
+			if (numberOfNews % NUMBER_OF_NEWS_IN_ONE_PAGE == 0) {
+				pages = numberOfNews / NUMBER_OF_NEWS_IN_ONE_PAGE;
+				return pages;
+			} else {
+				pages = (numberOfNews / NUMBER_OF_NEWS_IN_ONE_PAGE) + BONUS_PAGE;
+				return pages;
+			}
+		} catch (Exception e) {
+			throw new NewsException("Failed to count pages.", e);
+		}
+	}
+	
+	public static int getNumberOfPagesForFavourites(IUser user) throws ConnectionException, NewsException {
+
+		try {
+			PreparedStatement statement = connection.prepareStatement(COUNT_NEWS_FROM_FAVOURITES);
+			statement.setString(1, user.getUsername());
 			ResultSet resultSet = statement.executeQuery();
 			resultSet.next();
 			int numberOfNews = resultSet.getInt(1);
@@ -476,4 +499,20 @@ public class NewsDAO extends AbstractDAO {
 			throw new NewsException("Failed to check is existing", e);
 		}
 	}
+	
+	public static int getNewsId(INews currentNews) throws UserException {
+		try {
+			PreparedStatement getNewsIdStatement = connection.prepareStatement(NewsDAO.GET_NEWS_ID);
+			getNewsIdStatement.setString(1, currentNews.getTitle());
+			ResultSet newsResultSet = getNewsIdStatement.executeQuery();
+			newsResultSet.next();
+			int newsId = newsResultSet.getInt(1);
+			return newsId;
+		} catch (SQLException e) {
+			throw new UserException("Failed to check news id.", e);
+		}
+
+	}
+
+	
 }

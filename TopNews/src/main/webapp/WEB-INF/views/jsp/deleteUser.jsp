@@ -21,7 +21,7 @@
 			<div class="left_content">
 				<div class="contact_area">
 					<h2><spring:message code="DeleteUser" text="Delete User" /></h2>
-					<h3 style="color: green"><spring:message code="${message}" text="" /> ${username}</h3>
+					<h3 style="color: green"><spring:message code="${message}" text="" /> ${nameOfUser}</h3>
 					<h3 style="color: red"><spring:message code="${error}" text="" /></h3><br>
 					<h4><spring:message code="enterUsername" text="Remove rights" /></h4>
 					<form:form class="contact_form" method="POST" action="DeleteUser" commandName="user">

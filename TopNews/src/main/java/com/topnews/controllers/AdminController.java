@@ -1,7 +1,5 @@
 package com.topnews.controllers;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -11,14 +9,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.topnews.dataLoad.DataLoader;
 import com.topnews.exceptions.ConnectionException;
-import com.topnews.exceptions.NewsException;
 import com.topnews.exceptions.UserException;
 import com.topnews.models.Category;
 import com.topnews.models.User;
 import com.topnews.modelsDAO.AdminDAO;
-import com.topnews.modelsDAO.CategoryDAO;
-import com.topnews.modelsDAO.EmailDAO;
 import com.topnews.modelsDAO.UserDAO;
 
 @Controller
@@ -31,18 +27,13 @@ public class AdminController {
 				User user = (User) httpSession.getAttribute("user");
 				if (UserDAO.isAdmin(user)) {
 					model.addAttribute("user", user);
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
-					int unreaded = EmailDAO.numberOfUnreaded();
-					int readed = EmailDAO.numberOfReaded();
-					model.addAttribute("unreaded", unreaded);
-					model.addAttribute("readed", readed);
+					DataLoader.LoadSiteData(httpSession, model);
 					return "admin_panel";
 				}
-				httpSession.setAttribute("message", "notFoundPage");
+				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";
 			}
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (Exception e) {
 			model.addAttribute("message", "notLogged");
@@ -59,19 +50,15 @@ public class AdminController {
 				if (UserDAO.isAdmin(currentlyLoggedUser)) {
 					if (UserDAO.isUsernameExisting(user)) {
 						AdminDAO.giveRights(user.getUsername());
-						List<String> categories = CategoryDAO.showAllCategories();
-						httpSession.setAttribute("categories", categories);
-						httpSession.setAttribute("message", "SuccesAddRights");
-						httpSession.setAttribute("username", user.getUsername());
-						httpSession.removeAttribute("error");
+						DataLoader.LoadSiteData(httpSession, model);
+						model.addAttribute("message", "SuccesAddRights");
+						model.addAttribute("nameOfUser", user.getUsername());
 						return "addUserRights";
 					}
-					httpSession.setAttribute("error", "unexistingUser");
-					httpSession.removeAttribute("username");
-					httpSession.removeAttribute("message");
+					model.addAttribute("error", "unexistingUser");
 					return "addUserRights";
 				}
-				httpSession.setAttribute("message", "notFoundPage");
+				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";
 			}
 			model.addAttribute("message", "notLogged");
@@ -84,10 +71,6 @@ public class AdminController {
 			e.printStackTrace();
 			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
-		} catch (NewsException e) {
-			e.printStackTrace();
-			model.addAttribute("message", "serverMaintenance");
-			return "redirect:/Error";
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("message", "serverMaintenance");
@@ -102,23 +85,16 @@ public class AdminController {
 				User user = (User) httpSession.getAttribute("user");
 				if (UserDAO.isAdmin(user)) {
 					model.addAttribute(new User());
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
-					httpSession.removeAttribute("username");
-					httpSession.removeAttribute("error");
+					DataLoader.LoadSiteData(httpSession, model);
 					return "addUserRights";
 				} else {
-					httpSession.setAttribute("message", "notFoundPage");
+					model.addAttribute("message", "notFoundPage");
 					return "forward:/Error";
 				}
 			}
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (ConnectionException e) {
-			e.printStackTrace();
-			model.addAttribute("message", "serverMaintenance");
-			return "redirect:/Error";
-		} catch (NewsException e) {
 			e.printStackTrace();
 			model.addAttribute("message", "serverMaintenance");
 			return "redirect:/Error";
@@ -128,7 +104,7 @@ public class AdminController {
 			return "forward:/Login";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		}
 
@@ -144,32 +120,32 @@ public class AdminController {
 					if (UserDAO.isUsernameExisting(user)) {
 						if (!currentlyLoggedUser.getUsername().equals(user.getUsername())) {
 							AdminDAO.removeRights(user.getUsername());
-							List<String> categories = CategoryDAO.showAllCategories();
-							model.addAttribute("categories", categories);
-							httpSession.setAttribute("username", user.getUsername());
-							httpSession.setAttribute("message", "successRemoveRights");
-							httpSession.removeAttribute("error");
+							DataLoader.LoadSiteData(httpSession, model);
+							model.addAttribute("nameOfUser", user.getUsername());
+							model.addAttribute("message", "successRemoveRights");
 							return "removeUserRights";
 						} else {
-							httpSession.setAttribute("error", "selfRemoveRights");
-							httpSession.removeAttribute("message");
-							httpSession.removeAttribute("username");
+							model.addAttribute("error", "selfRemoveRights");
 							return "removeUserRights";
 						}
 					} else {
-						httpSession.setAttribute("error", "unexistingUser");
-						httpSession.removeAttribute("message");
-						httpSession.removeAttribute("username");
+						model.addAttribute("error", "unexistingUser");
 						return "removeUserRights";
 					}
 				}
 				model.addAttribute("message", "serverMaintenance");
 				return "redirect:/Error";
 			}
-			httpSession.setAttribute("message", "notLogged");
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
-		} catch (Exception e) {
+		} catch (UserException e) {
 			e.printStackTrace();
+			model.addAttribute("message", "serverMaintenance");
+			return "redirect:/Error";
+		} catch (ConnectionException e) {
+			model.addAttribute("message", "serverMaintenance");
+			return "redirect:/Error";
+		} catch (Exception e) {
 			model.addAttribute("message", "serverMaintenance");
 			return "redirect:/Error";
 		}
@@ -182,33 +158,25 @@ public class AdminController {
 				model.addAttribute(new User());
 				User currentlyLoggedUser = (User) httpSession.getAttribute("user");
 				if (UserDAO.isAdmin(currentlyLoggedUser)) {
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
-					httpSession.removeAttribute("username");
-					httpSession.removeAttribute("error");
-					httpSession.removeAttribute("message");
+					DataLoader.LoadSiteData(httpSession, model);
 					return "removeUserRights";
 				}
-				httpSession.setAttribute("message", "notFoundPage");
+				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";
 			}
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
-			return "redirect:/Error";
-		} catch (NewsException e) {
-			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "redirect:/Error";
 		} catch (UserException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notLogged");
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "redirect:/Error";
 		}
 	}
@@ -223,41 +191,35 @@ public class AdminController {
 					if (UserDAO.isAdmin(currentlyLoggedUser)) {
 						if (UserDAO.isUsernameExisting(user)) {
 							AdminDAO.deleteUser(user.getUsername());
-							List<String> categories = CategoryDAO.showAllCategories();
-
-							model.addAttribute("categories", categories);
+							DataLoader.LoadSiteData(httpSession, model);
 							model.addAttribute("message", "successDelete");
-							model.addAttribute("username", user.getUsername());
+							model.addAttribute("nameOfUser", user.getUsername());
 							return "deleteUser";
 						}
 						model.addAttribute("error", "deleteUnexistingUser");
 						return "deleteUser";
 					} else {
-						httpSession.setAttribute("message", "notFoundPage");
+						model.addAttribute("message", "notFoundPage");
 						return "redirect:/Error";
 					}
 				}
 				model.addAttribute("error", "cantDeleteYourself");
 				return "deleteUser";
 			} else {
-				httpSession.setAttribute("message", "notLogged");
+				model.addAttribute("message", "notLogged");
 				return "forward:/Login";
 			}
 		} catch (UserException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notLogged");
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
-			return "redirect:/Error";
-		} catch (NewsException e) {
-			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "redirect:/Error";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "redirect:/Error";
 		}
 	}
@@ -269,36 +231,28 @@ public class AdminController {
 				User user = (User) httpSession.getAttribute("user");
 				if (UserDAO.isAdmin(user)) {
 					model.addAttribute(new User());
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
-					httpSession.removeAttribute("username");
-					httpSession.removeAttribute("error");
-					httpSession.removeAttribute("message");
+					DataLoader.LoadSiteData(httpSession, model);
 					return "deleteUser";
 				} else {
-					httpSession.setAttribute("message", "notFoundPage");
+					model.addAttribute("message", "notFoundPage");
 					return "forward:/Error";
 				}
 
 			}
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
-			return "redirect:/Error";
-		} catch (NewsException e) {
-			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "redirect:/Error";
 		} catch (UserException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notLogged");
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Login";
 		}
 

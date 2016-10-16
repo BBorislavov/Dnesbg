@@ -2,7 +2,6 @@ package com.topnews.controllers;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.topnews.dataLoad.DataLoader;
 import com.topnews.exceptions.ConnectionException;
 import com.topnews.exceptions.NewsException;
 import com.topnews.exceptions.UserException;
@@ -24,7 +24,6 @@ import com.topnews.models.Comment;
 import com.topnews.models.INews;
 import com.topnews.models.News;
 import com.topnews.models.User;
-import com.topnews.modelsDAO.CategoryDAO;
 import com.topnews.modelsDAO.NewsDAO;
 import com.topnews.modelsDAO.UserDAO;
 
@@ -60,48 +59,33 @@ public class NewsController {
 					}
 					if (news.getText().equals("Invalid text") || news.getTitle().equals("Invalid title")) {
 						model.addAttribute("error", "incorrectNews");
-						List<String> categories = CategoryDAO.showAllCategories();
-						model.addAttribute("categories", categories);
-						List<INews> latestNews = NewsDAO.showAllNews("date");
-						List<INews> popularNews = NewsDAO.showAllNews("rating");
-						model.addAttribute("latestNews", latestNews);
-						model.addAttribute("popularNews", popularNews);
-						Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
-						model.addAttribute("allCategories", allCategories);
 						return "addNews";
 					}
 					NewsDAO.addNews(news, category, photoUrl);
 					model.addAttribute("message", "successNews");
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
-					List<INews> latestNews = NewsDAO.showAllNews("date");
-					List<INews> popularNews = NewsDAO.showAllNews("rating");
-					model.addAttribute("latestNews", latestNews);
-					model.addAttribute("popularNews", popularNews);
-					Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
-					model.addAttribute("allCategories", allCategories);
+					DataLoader.LoadSiteData(httpSession, model);
 					return "addNews";
 				}
-				httpSession.setAttribute("message", "notFoundPage");
+				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";
 			}
-			httpSession.setAttribute("message", "notLogged");
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (UserException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notLogged");
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (NewsException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		}
 	}
@@ -113,26 +97,21 @@ public class NewsController {
 				User user = (User) httpSession.getAttribute("user");
 				if (UserDAO.isAdmin(user)) {
 					model.addAttribute(new News());
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
+					DataLoader.LoadSiteData(httpSession, model);
 					return "addNews";
 				}
-				httpSession.setAttribute("message", "notFoundPage");
+				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";
 			}
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (UserException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notLogged");
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
-			return "forward:/Error";
-		} catch (NewsException e) {
-			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		}
 
@@ -158,49 +137,52 @@ public class NewsController {
 				model.addAttribute("lastNews", lastNews);
 				INews news = NewsDAO.showCurrentNews(id);
 				NewsDAO.increaseRating(id);
-				List<INews> latestNews = NewsDAO.showAllNews("date");
-				model.addAttribute("latestNews", latestNews);
 				model.addAttribute("news", news);
-				Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
-				model.addAttribute("allCategories", allCategories);
 				model.addAttribute(new Comment());
+				DataLoader.LoadSiteData(httpSession, model);
 				return "showCurrent";
 			} else {
-				httpSession.setAttribute("message", "serverMaintenance");
+				model.addAttribute("message", "serverMaintenance");
 				return "forward:/Error";
 			}
 		} catch (UserException e) {
 			e.printStackTrace();
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		}
 	}
 
 	@RequestMapping(value = "/DeleteNews", method = RequestMethod.GET)
-	public String deleteNews(@ModelAttribute("id") int id, Model model, HttpSession httpSession,
-			HttpServletRequest request) {
+	public String deleteNews(Model model, HttpSession httpSession, HttpServletRequest request) {
 		try {
-			if ((User) httpSession.getAttribute("user") != null) {
-				User user = (User) httpSession.getAttribute("user");
-				if (UserDAO.isAdmin(user)) {
-					NewsDAO.deleteNews(id);
-					String referer = request.getHeader("Referer");
-					return "redirect:" + referer;
+			if (request.getParameter("id") != null) {
+				int id = Integer.parseInt(request.getParameter("id"));
+				if ((User) httpSession.getAttribute("user") != null) {
+					User user = (User) httpSession.getAttribute("user");
+					if (UserDAO.isAdmin(user)) {
+						NewsDAO.deleteNews(id);
+						String referer = request.getHeader("Referer");
+						return "redirect:" + referer;
+					}
+					model.addAttribute("message", "notFoundPage");
+					return "forward:/Error";
 				}
-				httpSession.setAttribute("message", "serverMaintenance");
+				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";
 			}
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (UserException e) {
 			e.printStackTrace();
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		}
 	}

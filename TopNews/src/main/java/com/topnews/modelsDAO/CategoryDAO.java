@@ -95,6 +95,9 @@ public class CategoryDAO extends AbstractDAO {
 				ArrayList<String> subcategories = new ArrayList<String>();
 				while (subResultSet.next()) {
 					String subcategoryName = subResultSet.getString("sub.name");
+					if (subcategoryName != null) {
+						subcategoryName = subcategoryName.replaceAll(" ", "%20");
+					}
 					subcategories.add(subcategoryName);
 				}
 				newsInCategory.put(categoryName, subcategories);

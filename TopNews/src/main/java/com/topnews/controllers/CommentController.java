@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.topnews.exceptions.CommentException;
 import com.topnews.exceptions.ConnectionException;
 import com.topnews.exceptions.NewsException;
+import com.topnews.exceptions.UserException;
 import com.topnews.models.Comment;
 import com.topnews.modelsDAO.CommentDAO;
 
@@ -48,6 +49,12 @@ public class CommentController {
 				List<Comment> blank = new ArrayList<Comment>();
 				return blank;
 			}
+		} catch (UserException e) {
+			e.printStackTrace();
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+		} catch (NewsException e) {
+			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

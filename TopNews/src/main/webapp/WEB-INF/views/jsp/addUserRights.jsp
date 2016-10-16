@@ -22,7 +22,7 @@
 				<div class="contact_area">
 					<h2><spring:message code="AddRights" text="Add user rights" /></h2>
 					<h3 style="color: red"><spring:message code="${error}" text="" /></h3>
-					<h3 style="color: green"><spring:message code="${message}" text="" /> ${username}</h3><br> 
+					<h3 style="color: green"><spring:message code="${message}" text="" /> ${nameOfUser}</h3><br> 
 					<h4><spring:message code="enterUsername" text="Add user rights" />:</h4>
 					<form:form class="contact_form" method="POST" action="AddUserRights" commandName="user">
 						<form:input path="username" class="form-control" type="text"/>

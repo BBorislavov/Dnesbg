@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class LanguageController {
+	
 	@RequestMapping(value = "/Language", method = RequestMethod.GET)
 	public String language(HttpServletRequest request) {
 		if (request.getHeader("Referer") != null) {

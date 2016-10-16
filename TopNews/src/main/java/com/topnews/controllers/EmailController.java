@@ -2,7 +2,6 @@ package com.topnews.controllers;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,17 +15,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.topnews.dataLoad.DataLoader;
 import com.topnews.exceptions.CommentException;
 import com.topnews.exceptions.ConnectionException;
 import com.topnews.exceptions.NewsException;
 import com.topnews.exceptions.UserException;
 import com.topnews.models.Email;
 import com.topnews.models.IEmail;
-import com.topnews.models.INews;
 import com.topnews.models.User;
-import com.topnews.modelsDAO.CategoryDAO;
 import com.topnews.modelsDAO.EmailDAO;
-import com.topnews.modelsDAO.NewsDAO;
 import com.topnews.modelsDAO.UserDAO;
 
 @Controller
@@ -60,33 +57,19 @@ public class EmailController {
 				}
 				if (email.getSubject().equals("Invalid subject") || email.getText().equals("Invalid text")) {
 					model.addAttribute("error", "incorrectAlert");
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
-					List<INews> latestNews = NewsDAO.showAllNews("date");
-					List<INews> popularNews = NewsDAO.showAllNews("rating");
-					model.addAttribute("latestNews", latestNews);
-					model.addAttribute("popularNews", popularNews);
-					Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
-					model.addAttribute("allCategories", allCategories);
+					DataLoader.LoadSiteData(httpSession, model);
 					return "email";
 				}
 				EmailDAO.sendEmail(email, userId, photoUrl);
 				model.addAttribute("message", "successAlert");
-				List<String> categories = CategoryDAO.showAllCategories();
-				model.addAttribute("categories", categories);
-				List<INews> latestNews = NewsDAO.showAllNews("date");
-				List<INews> popularNews = NewsDAO.showAllNews("rating");
-				model.addAttribute("latestNews", latestNews);
-				model.addAttribute("popularNews", popularNews);
-				Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
-				model.addAttribute("allCategories", allCategories);
+				DataLoader.LoadSiteData(httpSession, model);
 				return "email";
 
 			}
 			return "redirect:/Login";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		}
 	}
@@ -96,25 +79,10 @@ public class EmailController {
 		try {
 			if (httpSession.getAttribute("user") != null) {
 				model.addAttribute(new Email());
-				List<String> categories = CategoryDAO.showAllCategories();
-				model.addAttribute("categories", categories);
-				List<INews> latestNews = NewsDAO.showAllNews("date");
-				List<INews> popularNews = NewsDAO.showAllNews("rating");
-				model.addAttribute("latestNews", latestNews);
-				model.addAttribute("popularNews", popularNews);
-				Map<String, List<String>> allCategories = CategoryDAO.AllCategories();
-				model.addAttribute("allCategories", allCategories);
+				DataLoader.LoadSiteData(httpSession, model);
 				return "email";
 			}
-			httpSession.setAttribute("message", "notFoundPage");
-			return "forward:/Error";
-		} catch (ConnectionException e) {
-			e.printStackTrace();
-			model.addAttribute("message", "serverMaintenance");
-			return "forward:/Error";
-		} catch (NewsException e) {
-			e.printStackTrace();
-			model.addAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,18 +101,13 @@ public class EmailController {
 				if (isAdmin) {
 					List<IEmail> alerts = EmailDAO.showUnreaded();
 					model.addAttribute("alerts", alerts);
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
-					int unreaded = EmailDAO.numberOfUnreaded();
-					int readed = EmailDAO.numberOfReaded();
-					model.addAttribute("unreaded", unreaded);
-					model.addAttribute("readed", readed);
+					DataLoader.LoadSiteData(httpSession, model);
 					return "showUnreadedAlerts";
 				}
-				httpSession.setAttribute("message", "notFoundPage");
+				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";
 			}
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (UserException e) {
 			e.printStackTrace();
@@ -152,11 +115,11 @@ public class EmailController {
 			return "forward:/Login";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (NewsException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		}
 	}
@@ -170,15 +133,10 @@ public class EmailController {
 				if (isAdmin) {
 					List<IEmail> alerts = EmailDAO.showReaded();
 					model.addAttribute("alerts", alerts);
-					List<String> categories = CategoryDAO.showAllCategories();
-					model.addAttribute("categories", categories);
-					int unreaded = EmailDAO.numberOfUnreaded();
-					int readed = EmailDAO.numberOfReaded();
-					model.addAttribute("unreaded", unreaded);
-					model.addAttribute("readed", readed);
+					DataLoader.LoadSiteData(httpSession, model);
 					return "showReadedAlerts";
 				}
-				httpSession.setAttribute("message", "notFoundPage");
+				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";
 			}
 			httpSession.setAttribute("message", "notFoundPage");
@@ -189,15 +147,15 @@ public class EmailController {
 			return "forward:/Login";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (NewsException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		}
 	}
@@ -215,37 +173,28 @@ public class EmailController {
 						IEmail alert = EmailDAO.showCurrentAlert(id);
 						EmailDAO.setReaded(id);
 						model.addAttribute("alert", alert);
-						List<String> categories = CategoryDAO.showAllCategories();
-						model.addAttribute("categories", categories);
-						int unreaded = EmailDAO.numberOfUnreaded();
-						int readed = EmailDAO.numberOfReaded();
-						model.addAttribute("unreaded", unreaded);
-						model.addAttribute("readed", readed);
+						DataLoader.LoadSiteData(httpSession, model);
 						return "showCurrentAlert";
 					}
-					httpSession.setAttribute("message", "notFoundPage");
+					model.addAttribute("message", "notFoundPage");
 					return "forward:/Error";
 				}
-				httpSession.setAttribute("message", "notLogged");
+				model.addAttribute("message", "notLogged");
 				return "forward:/Login";
 			}
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (UserException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notLogged");
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
-			return "forward:/Error";
-		} catch (NewsException e) {
-			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		}
 	}
@@ -264,32 +213,32 @@ public class EmailController {
 							String referer = request.getHeader("Referer");
 							return "redirect:" + referer;
 						}
-						httpSession.setAttribute("message", "notFoundPage");
+						model.addAttribute("message", "notFoundPage");
 						return "forward:/Error";
 					}
-					httpSession.setAttribute("message", "notFoundPage");
+					model.addAttribute("message", "notFoundPage");
 					return "forward:/Error";
 				}
-				httpSession.setAttribute("message", "notFoundPage");
+				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";
 			}
-			httpSession.setAttribute("message", "notFoundPage");
+			model.addAttribute("message", "notFoundPage");
 			return "forward:/Error";
 		} catch (UserException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "notLogged");
+			model.addAttribute("message", "notLogged");
 			return "forward:/Login";
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		} catch (CommentException e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		} catch (Exception e) {
 			e.printStackTrace();
-			httpSession.setAttribute("message", "serverMaintenance");
+			model.addAttribute("message", "serverMaintenance");
 			return "forward:/Error";
 		}
 	}

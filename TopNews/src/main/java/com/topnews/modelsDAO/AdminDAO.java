@@ -14,12 +14,13 @@ public class AdminDAO extends AbstractDAO {
 	private static final String DELETE_USER = "DELETE FROM news_db.users" + " WHERE username=?;";
 	private static final String DELETE_USER_FROM_EMAILS = "UPDATE emails SET user_id=5 WHERE user_id=?;";
 
-	public static void giveRights(String username) throws ConnectionException, UserException {
+	public static boolean giveRights(String username) throws ConnectionException, UserException {
 		try {
 			String sql = GIVE_RIGHTS_TO_USER;
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, username);
 			statement.executeUpdate();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new UserException("Failed to give rights", e);

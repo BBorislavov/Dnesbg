@@ -26,41 +26,28 @@
 	<div class="single_sidebar">
 		<h2>
 			<span>
-			<spring:message code="AllNewsIn" text="All news in" /> 
-			<spring:message code="${name}" text="${name}" /> 
- 			<spring:message code="Category" text="Category" /></span>
+			<spring:message code="AllFavourites" text="All favourite news of" /> 
+			<spring:message code="${name}" text="${name}" /></span>
 		</h2>
 		<div class="newsSection">
 			<div class="single_page">
 				<ul>
 					<c:forEach var="listCategory" items="${news}">
 						<h3>
-							<a href="./News?category=${name}&id=${listCategory.id}">${listCategory.title}
-							</a>
-							<c:if test="${not empty isAdmin}">
-							<a style = "color: red" class="deleteNews" href="./DeleteNews?id=${listCategory.id}">
-							<i class="fa fa-times" aria-hidden="true"></i>
-							</c:if>
+							<a href="./News?category=${categories.get(listCategory.id)}&id=${listCategory.id}">${listCategory.title}
 							</a>
 							<c:if test="${not  isAdmin}">
 							<c:if test="${not empty user}">
-							<c:if test="${favourites.get(listCategory.id)>0}">
-							<a class="addFavourite" href="./RemoveFavourites?id=${listCategory.id}">
+							<a class="removeFromFavourites" href="./RemoveFavourites?id=${listCategory.id}">
 							<i style="color: red" class="fa fa-heart" aria-hidden="true"></i>
 							</a>
 							</c:if>
-							<c:if test="${favourites.get(listCategory.id)==0}">
-							<a class="addFavourite" href="./AddToFavourites?id=${listCategory.id}">
-							<i style="color: red" class="fa fa-heart-o" aria-hidden="true"></i>
-							</a>
-							</c:if>
-							</c:if>
 							</c:if>
 						</h3>
-						<a style = "border: 5px solid #89d2f0" href="./News?category=${name}&id=${listCategory.id}"><img
+						<a style = "border: 5px solid #89d2f0" href="./News?category=${categories.get(listCategory.id)}&id=${listCategory.id}"><img
 							height="100" width="150" src="${listCategory.photoUrl}"></a>
 						<h5>${listCategory.text}<a
-								href="./News?category=${name}&id=${listCategory.id}"><img
+								href="./News?category=${categories.get(listCategory.id)}&id=${listCategory.id}"><img
 								src="./images/more.gif"></a>
 						</h5>
 						<div class="post_commentbox">
@@ -74,13 +61,13 @@
 		</div>
 	</div>
 	<c:forEach var="pages" items="${pages}">
-	<a style="font-size: 40px" href="Category?name=${name}&page=${pages}">${pages}</a>
+	<a style="font-size: 40px" href="Favourites?page=${pages}">${pages}</a>
 	</c:forEach>
 		<jsp:include page="user_panel/footer.jsp"></jsp:include>
 
 	<script type="text/javascript">
-		$('.deleteNews').click(function(e) {
-			if (!confirm('Are you sure you want to delete this news?')) {
+		$('.removeFromFavourites').click(function(e) {
+			if (!confirm('Are you sure you want to remove this news from favourites?')) {
 				e.preventDefault();
 			}
 

@@ -46,10 +46,10 @@
       <div class="col-lg-8 col-md-8 col-sm-8">
         <div class="left_content">
           <div class="error_page">
-            <h3>We Are Sorry</h3>
+            <h3><spring:message code="Sorry" text="We are sorry" /></h3>
             <h1>404</h1>
             <h3 style="color: red"><spring:message code="${message}" text="" /></h3><br>
-            <span></span> <a href="./" class="wow fadeInLeftBig">Go to home page</a> </div>
+            <span></span> <a href="./" class="wow fadeInLeftBig"><spring:message code="Homepage" text="Go to homepage" /></a> </div>
         </div>
       </div>
   <div class="col-lg-4 col-md-4 col-sm-4">

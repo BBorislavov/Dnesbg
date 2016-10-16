@@ -42,7 +42,8 @@
 				<c:when test="${not empty sessionScope.isAdmin}">
 				</c:when>
 				<c:when test="${not empty sessionScope.user}">
-					<li><a style="color: red" href="Alert">Alert us</a></li>
+					<li><a style="color: red" href="Alert"><spring:message code="alertUs" text="Alert us" /></a></li>
+					<li><a href="Favourites?page=1"><spring:message code="Favourites" text="Favourites" /></a></li>
 				</c:when>
 			</c:choose>
 			<li><a href="Weather"><spring:message code="Weather" text="default text" /></a></li>	
