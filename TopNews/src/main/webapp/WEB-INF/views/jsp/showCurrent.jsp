@@ -25,23 +25,31 @@
 	<div class="row">
 	<div class="col-lg-12 col-md-12">
 			<div class="latest_newsarea">
-				<span><spring:message code="LatestNews" text="category" /></span>
+				<span><spring:message code="LatestNews" text="Latest News" /></span>
 				<ul id="ticker01" class="news_sticker">
 				 <c:forEach var="latestNews" items="${latestNews}">
-					<li><a href="#"><img src="${latestNews.photoUrl}"
+					<li><a href="News?category=${latestNews.category}&id=${latestNews.id}"><img src="${latestNews.photoUrl}"
 							alt="">${latestNews.title}</a></li>
 				</c:forEach>
 				</ul>
 				<div class="social_area">
 					<ul class="social_nav">
-						<li class="facebook"><a href="#"></a></li>
-						<li class="twitter"><a href="#"></a></li>
-						<li class="flickr"><a href="#"></a></li>
-						<li class="pinterest"><a href="#"></a></li>
-						<li class="googleplus"><a href="#"></a></li>
-						<li class="vimeo"><a href="#"></a></li>
-						<li class="youtube"><a href="#"></a></li>
-						<li class="mail"><a href="#"></a></li>
+						<li class="facebook"><a href="http://www.facebook.com"
+							target="_blank"></a></li>
+						<li class="twitter"><a href="https://twitter.com/"
+							target="_blank"></a></li>
+						<li class="flickr"><a href="https://www.flickr.com/"
+							target="_blank"></a></li>
+						<li class="pinterest"><a href="https://www.pinterest.com/"
+							target="_blank"></a></li>
+						<li class="googleplus"><a href="https://plus.google.com/"
+							target="_blank"></a></li>
+						<li class="vimeo"><a href="https://vimeo.com/"
+							target="_blank"></a></li>
+						<li class="youtube"><a href="https://www.youtube.com/"
+							target="_blank"></a></li>
+						<li class="mail"><a href="https://www.google.com/gmail/"
+							target="_blank"></a></li>
 					</ul>
 				</div>
 			</div>
@@ -51,21 +59,21 @@
 			<br>
 				<div class="single_page">
 					<ol class="breadcrumb">
-							<li><a href="./"><spring:message code="Home" text="default text" /></a></li>
-						<li><a href="Category?name=${category}"><spring:message code="${category}" text="default text" /></a></li>
+							<li><a href="./"><spring:message code="Home" text="Home" /></a></li>
+						<li><a href="Category?name=${category}&page=1"><spring:message code="${category}" text="${category}" /></a></li>
 					</ol>
 					<h1>${news.title}</h1>
 					<div class="post_commentbox">
-						<a href="#"><i class="fa fa-user"></i>IT Talents team</a> <span><i
-							class="fa fa-calendar"></i>${news.dateOfPost}</span> <a href="#"><i
-							class="fa fa-tags"></i>${category}</a> <a href="#"><i
+						<a><i class="fa fa-user"></i>IT Talents team</a> <span><i
+							class="fa fa-calendar"></i>${news.dateOfPost}</span> <a href="Category?name=${category}&page=1"><i
+							class="fa fa-tags"></i>${category}</a> <a><i
 							class="fa fa-eye"></i>${news.rating+1}</a>
 					</div>
 
 					<div style="text-align: justify; text-indent: 50px;"
 						class="single_page_content">
 						<img class="img-center" src="${news.photoUrl}" alt="">
-						${news.text}
+						<p style = "text-indent: 30px">${news.text}</p>
 					</div>
 					<div>
 						<form:form id="form" action="AddComment" class="contact_form"
@@ -79,11 +87,11 @@
 					<div id="comments"></div>
 					<div class="social_link">
 						<ul class="sociallink_nav">
-							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-							<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+							<li><a href="http://www.facebook.com"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="https://twitter.com/"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="https://plus.google.com/"><i class="fa fa-google-plus"></i></a></li>
+							<li><a href="https://www.linkedin.com/"><i class="fa fa-linkedin"></i></a></li>
+							<li><a href="https://www.pinterest.com/"><i class="fa fa-pinterest"></i></a></li>
 						</ul>
 					</div>
 				</div>
@@ -124,101 +132,117 @@
 		id="isAdmin" value="${sessionScope.isAdmin}" /> 
 
 		<jsp:include page="user_panel/footer.jsp"></jsp:include>
-		<script
-		type="text/javascript">
-			$(document)
-					.ready(
-							function() {
-								function commentsRender(data) {
+		<script type="text/javascript">
+		$(document).ready(
+			    function() {
+			        function commentsRender(data) {
 
-									$("#comments").empty();
-									var object, commentString, deleteButton, currUsername = $(
-											'#currUsername').val(), isAdmin = $(
-											'#isAdmin').val();
-									console.log(isAdmin);
-									for (index in data) {
-										object = data[index];
+			            $("#comments").empty();
+			            var object, commentString, deleteButton, currUsername = $(
+			                    '#currUsername').val(),
+			                isAdmin = $(
+			                    '#isAdmin').val();
+			            console.log(isAdmin);
+			            for (index in data) {
+			                object = data[index];
 
-										if (isAdmin
-												|| (currUsername !== '' && currUsername === object.user)) {
+			                if (isAdmin ||
+			                    (currUsername !== '' && currUsername === object.user)) {
 
-											deleteButton = '<a href="DeleteComment?id='
-													+ object.commentId
-													+ '" class="deleteButton" >Delete</a>';
-										} else {
-											deleteButton = '';
-										}
+			                    deleteButton = '<a href="DeleteComment?id=' +
+			                        object.commentId +
+			                        '" class="deleteButton" >Delete</a>';
+			                } else {
+			                    deleteButton = '';
+			                }
 
-										commentString = '<div class="comment">'
-												+ '<h5>User: ' + object.user
-												+ ' | Posted at: 	'
-												+ object.date + '</h5>'
-												+ '<h4>Comment: ' + object.text
-												+ '</h4>' + deleteButton
-												+ '</div>';
+			                commentString = '<div class="comment">' +
+			                    '<h5>User: ' + object.user +
+			                    ' | Posted at: 	' +
+			                    object.date + '</h5>' +
+			                    '<h4>Comment: ' + object.text +
+			                    '</h4>' + deleteButton +
+			                    '</div>';
 
-										$("#comments").append(commentString);
-									}
+			                $("#comments").append(commentString);
+			            }
 
-									$('.deleteButton')
-											.click(
-													function(event) {
+			            $('.deleteButton')
+			                .click(
+			                    function(event) {
 
-														event.preventDefault();
-														if (confirm('Are you sure you want to delete this comment ?')) {
-															$
-																	.ajax({
-																		url : 'http://localhost:8080/TopNews/'
-																				+ $(
-																						this)
-																						.attr(
-																								'href'),
-																		type : 'DELETE',
-																		success : function(
-																				res) {
-																			reloadComments(res);
-																		}
-																	});
-														}
-													});
+			                        event.preventDefault();
+			                        if (confirm('Are you sure you want to delete this comment ?')) {
+			                            $
+			                                .ajax({
+			                                    url: './' +
+			                                        $(
+			                                            this)
+			                                        .attr(
+			                                            'href'),
+			                                    type: 'DELETE',
+			                                    success: function(
+			                                        res) {
+			                                        reloadComments(res);
+			                                    }
+			                                });
+			                        }
+			                    });
 
-								}
+			        }
 
-								function reloadComments(data) {
-									if (data) {
-										commentsRender(data);
-									} else {
-										$
-												.get(
-														"http://localhost:8080/TopNews/ShowComments",
-														function(data) {
-															commentsRender(data)
-														});
-									}
-								}
+			        function reloadComments(data) {
+			            if (data) {
+			                commentsRender(data);
+			            } else {
+			                $
+			                    .get(
+			                        "./ShowComments",
+			                        function(data) {
+			                            commentsRender(data)
+			                        });
+			            }
+			        }
 
-								$('#add-comment')
-										.click(
-												function(e) {
-													e.preventDefault();
-													var newCommentVal = $(
-															'#newComment')
-															.val();
-													$
-															.ajax({
-																url : "http://localhost:8080/TopNews/AddComment",
-																method : 'POST',
-																data : {
-																	text : newCommentVal
-																},
-																success : function(
-																		res) {
-																	reloadComments(res);
-																}
-															});
-												});
+			        $('#add-comment').click(
+			                function(e) {
+			                    e.preventDefault();
+			                    var newCommentVal = $(
+			                            '#newComment')
+			                        .val();
+			                    $
+			                        .ajax({
+			                            url: "./AddComment",
+			                            method: 'POST',
+			                            data: {
+			                                text: newCommentVal
+			                            },
+			                            success: function(
+			                                res) {
+			                                reloadComments(res);
+			                            }
+			                        });
+			       });
+				   $('#newComment').keyup(function () {
+					   checkEmptyTextArea();
+					  
+				   });
+				   
+				   function checkEmptyTextArea() { 
+					   if($('#newComment').val() === ""){
+						   $('#add-comment').attr("disabled", true);
+						   $('#add-comment').css("cursor", "not-allowed") 
+					   }
+					   else {
+						   $('#add-comment').attr("disabled", false);  
+						   $('#add-comment').css("cursor", "pointer")
+					   }
+				   }
+				   checkEmptyTextArea();
+			       reloadComments();
 
-								reloadComments();
-
-							});
+			    });
+			
+			
+			
 		</script>

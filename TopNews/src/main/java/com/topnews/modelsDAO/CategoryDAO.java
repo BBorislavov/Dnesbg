@@ -28,6 +28,7 @@ public class CategoryDAO extends AbstractDAO {
 	private static final String DELETE_CATEGORY = "DELETE FROM news_db.categories WHERE subcategory_id=?;";
 	private static final String INSERT_CATEGORY = "INSERT INTO news_db.categories VALUES (? , null , ?);";
 	private static final String CHECK_CATEGORY_EXISTING = "SELECT COUNT(*) FROM categories WHERE name = ?;";
+	private static final String GET_NEWS_ID_BY_CATEGORY = "SELECT news_id FROM news_has_categories nc JOIN categories c ON (c.subcategory_id = nc.subcategory_id) WHERE c.name = ?;";
 
 	public static void addCategory(String category, String subcategory) throws ConnectionException, UserException {
 		try {
@@ -57,9 +58,17 @@ public class CategoryDAO extends AbstractDAO {
 		try {
 			PreparedStatement categoryIdStatement = connection.prepareStatement(GET_CATEGORY_ID);
 			categoryIdStatement.setString(1, name);
-			ResultSet resultSetNews = categoryIdStatement.executeQuery();
-			resultSetNews.next();
-			int categoryId = resultSetNews.getInt(1);
+			ResultSet resultSetCategory = categoryIdStatement.executeQuery();
+			resultSetCategory.next();
+			int categoryId = resultSetCategory.getInt(1);
+			
+			PreparedStatement newsIdStatement = connection.prepareStatement(GET_NEWS_ID_BY_CATEGORY);
+			newsIdStatement.setString(1, name);
+			ResultSet resultSetNews = newsIdStatement.executeQuery();
+			while (resultSetNews.next()){
+			int newsId = resultSetNews.getInt(1);
+			NewsDAO.deleteNews(newsId);
+			}
 
 			PreparedStatement insertStatement = connection.prepareStatement(DELETE_CATEGORY);
 			insertStatement.setInt(1, categoryId);
@@ -101,6 +110,29 @@ public class CategoryDAO extends AbstractDAO {
 					if (subcategoryName != null) {
 						subcategoryName = subcategoryName.replaceAll(" ", "%20");
 					}
+					subcategories.add(subcategoryName);
+				}
+				newsInCategory.put(categoryName, subcategories);
+			}
+			return Collections.unmodifiableMap(newsInCategory);
+		} catch (Exception e) {
+			throw new NewsException("Failed to show categories.", e);
+		}
+	}
+	
+	public static Map<String, List<String>> allCategoriesNames() throws ConnectionException, NewsException {
+		try {
+			PreparedStatement categoryStatement = connection.prepareStatement(GET_MAIN_CATEGORIES);
+			ResultSet resultSet = categoryStatement.executeQuery();
+			Map<String, ArrayList<String>> newsInCategory = new HashMap<String, ArrayList<String>>();
+			while (resultSet.next()) {
+				String categoryName = resultSet.getString("name");
+				PreparedStatement subStatement = connection.prepareStatement(GET_SUBCATEGORIES);
+				subStatement.setString(1, categoryName);
+				ResultSet subResultSet = subStatement.executeQuery();
+				ArrayList<String> subcategories = new ArrayList<String>();
+				while (subResultSet.next()) {
+					String subcategoryName = subResultSet.getString("sub.name");
 					subcategories.add(subcategoryName);
 				}
 				newsInCategory.put(categoryName, subcategories);

@@ -29,7 +29,7 @@
 					<ul class="dropdown-menu" role="menu">
 						<c:forEach var="name" items="${category.value}">
 						<c:if test="${not empty name}">
-							<li><a href="Category?name=${name}&page=1"><spring:message code="${name}" text="${name}" /></a></li>
+							<li><a href="Category?name=${name}&page=1"><spring:message code="${name}" text="${name.replaceAll('%20',' ')}" /></a></li>
 						</c:if>
 						<c:if test="${empty name}">
 							<li><a href="Category?name=${category.key}&page=1">${category.key}</a></li>

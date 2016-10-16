@@ -43,6 +43,8 @@ public abstract class DataLoader {
 			httpSession.setAttribute("popularNews", popularNews);
 			httpSession.setAttribute("allNews", allNews);
 			Map<String, List<String>> allCategories = CategoryDAO.allCategories();
+			Map<String, List<String>> categoryNames = CategoryDAO.allCategoriesNames();
+			httpSession.setAttribute("categoryNames", categoryNames);
 			httpSession.setAttribute("allCategories", allCategories);
 			List<String> categories = CategoryDAO.showAllCategories();
 			httpSession.setAttribute("categories", categories);

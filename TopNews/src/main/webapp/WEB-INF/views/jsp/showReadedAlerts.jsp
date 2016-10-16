@@ -38,8 +38,7 @@
 								</h5>
 								<h3>
 									<a href="./Alerts?id=${email.id}">${email.subject}</a> <a
-										class="deleteAlert" href="./DeleteAlert?id=${email.id}"><img
-										src="./images/remove.png"></a>
+										class="deleteAlert" href="./DeleteAlert?id=${email.id}"><i style="color: red" class="fa fa-times" aria-hidden="true"></i></a>
 								</h3>
 								<h5>
 									<span><i class="fa fa-calendar"></i> ${email.date}</span>
