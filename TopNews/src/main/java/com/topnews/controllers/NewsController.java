@@ -45,7 +45,7 @@ public class NewsController {
 					String photoUrl = SERVER_DEFAULT_IMAGE;
 					if (!multipartFile.isEmpty()) {
 						String[] path = multipartFile.getOriginalFilename().split(":\\\\");
-						String fileName = path[path.length - 1] + (new Random().nextInt() * NUMBER_OF_COMBINATIONS);
+						String fileName = path[path.length - 1];
 						String username = null;
 						if ((String) httpSession.getAttribute("username") != null) {
 							username = (String) httpSession.getAttribute("username");
@@ -54,13 +54,15 @@ public class NewsController {
 						}
 						String location = LOCATION + username + "\\";
 						new File(location).mkdir();
-						FileCopyUtils.copy(multipartFile.getBytes(), new File(location + fileName));
-						photoUrl = SERVER_IMAGES_PATH + username + "/" + fileName;
+						int random = (new Random().nextInt() * NUMBER_OF_COMBINATIONS);
+						FileCopyUtils.copy(multipartFile.getBytes(), new File(location + random + fileName));
+						photoUrl = SERVER_IMAGES_PATH + username + "/" + random + fileName;
 					}
 					if (news.getText().equals("Invalid text") || news.getTitle().equals("Invalid title")) {
 						model.addAttribute("error", "incorrectNews");
 						return "addNews";
 					}
+					System.err.println(photoUrl);
 					NewsDAO.addNews(news, category, photoUrl);
 					model.addAttribute("message", "successNews");
 					DataLoader.LoadSiteData(httpSession, model);

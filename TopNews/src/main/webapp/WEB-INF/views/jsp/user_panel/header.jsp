@@ -14,10 +14,10 @@
 							<c:choose>
 								<c:when test="${not empty sessionScope.isAdmin}">
 									<li><a href="AdminPanel"><spring:message code="AdminPanel" text="Admin Panel" /></a></li>
-									<li><a href="Logout"><spring:message code="logout" text="Logout" /></a></li>
+									<li><a href="Logout"><spring:message code="Logout" text="Logout" /></a></li>
 								</c:when>
 								<c:when test="${not empty sessionScope.user}">
-									<li><a href="Logout"><spring:message code="logout" text="Logout" /></a></li>
+									<li><a href="Logout"><spring:message code="Logout" text="Logout" /></a></li>
 								</c:when>
 								<c:otherwise>
 									<li><a id="modal_trigger" href="Register"><spring:message code="register" text="default text" /></a></li>
@@ -43,7 +43,7 @@
 							<a href="./Language?language=en"><img width="13%" src="./images/en-flag.png"></a>
 							<a href="./Language?language=de"><img width="13%" src="./images/de-flag.png"></a>
 							<a href="./Language?language=es"><img width="13%" src="./images/es-flag.png"></a>
-							<a href="./Language?language=es"><img width="13%" src="./images/fr-flag.png"></a>
+							<a href="./Language?language=fr"><img width="13%" src="./images/fr-flag.png"></a>
 					</div>
 					<div class="add_banner">
 						<a href="#"><img src="./images/top_news_banner.png" alt=""></a>
