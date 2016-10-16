@@ -71,7 +71,7 @@ public class NewsDAO extends AbstractDAO {
 			+ " ON (nc.subcategory_id = c.subcategory_id)" + " JOIN (news_db.photos p) ON (n.id=p.news_id) ORDER BY n.";
 	private static final String GET_NEWS_OF_CATEGORY = "SELECT p.url, n.id, n.rating, n.title, c.name FROM news_db.news n "
 			+ "JOIN news_db.news_has_categories nc ON (n.id=nc.news_id) JOIN news_db.categories c ON (nc.subcategory_id = c.subcategory_id) "
-			+ "JOIN (news_db.photos p) ON (n.id=p.news_id) WHERE c.category_id = ? ORDER BY n.date DESC LIMIT 5;";
+			+ "JOIN (news_db.photos p) ON (n.id=p.news_id) WHERE c.category_id = ? ORDER BY n.date DESC LIMIT 6;";
 	private static final String GET_FIRST_NEWS_OF_CATEGORY = "SELECT p.url, n.id, n.rating, n.text, n.title, c.name FROM news_db.news n "
 			+ "JOIN news_db.news_has_categories nc ON (n.id=nc.news_id) JOIN news_db.categories c ON (nc.subcategory_id = c.subcategory_id) "
 			+ "JOIN (news_db.photos p) ON (n.id=p.news_id) WHERE c.category_id = ? ORDER BY n.date DESC LIMIT 1;";
@@ -106,6 +106,7 @@ public class NewsDAO extends AbstractDAO {
 			addPhotoStatement.executeUpdate();
 
 			PreparedStatement statementGetCategoryId = connection.prepareStatement(CategoryDAO.GET_CATEGORY_ID);
+			category = category.replaceAll("%20", " ");
 			statementGetCategoryId.setString(1, category);
 			ResultSet resultSetCategory = statementGetCategoryId.executeQuery();
 			resultSetCategory.next();
@@ -597,7 +598,7 @@ public class NewsDAO extends AbstractDAO {
 
 	public static int getNewsId(INews currentNews) throws UserException {
 		try {
-			PreparedStatement getNewsIdStatement = connection.prepareStatement(NewsDAO.GET_NEWS_ID);
+			PreparedStatement getNewsIdStatement = connection.prepareStatement(GET_NEWS_ID);
 			getNewsIdStatement.setString(1, currentNews.getTitle());
 			ResultSet newsResultSet = getNewsIdStatement.executeQuery();
 			newsResultSet.next();

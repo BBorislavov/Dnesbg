@@ -120,7 +120,7 @@
 									class="featured_img"> <img alt=""
 									src="${firstSportNews.photoUrl}"> <span class="overlay"></span>
 								</a> <figcaption> <a
-									href="${firstSportNews.category}&id=${firstSportNews.id}">${firstSportNews.title}</a>
+									href="News?category=${firstSportNews.category}&id=${firstSportNews.id}">${firstSportNews.title}</a>
 								</figcaption>
 								<p style="text-align: justify;">${firstSportNews.text}</p>
 								</figure></li>

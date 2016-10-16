@@ -29,7 +29,7 @@ import com.topnews.modelsDAO.UserDAO;
 
 @Controller
 public class NewsController {
-	private static final int NUMBER_OF_COMBINATIONS = 10000;
+	private static final int NUMBER_OF_COMBINATIONS = 1000;
 	private static final int ANONYMOUS_USER = 4;
 	public static final String LOCATION = "D:\\news_images\\";
 	public static final String SERVER_IMAGES_PATH = "./news_images/";
@@ -45,6 +45,7 @@ public class NewsController {
 					String photoUrl = SERVER_DEFAULT_IMAGE;
 					if (!multipartFile.isEmpty()) {
 						String[] path = multipartFile.getOriginalFilename().split(":\\\\");
+					
 						String fileName = path[path.length - 1];
 						String username = null;
 						if ((String) httpSession.getAttribute("username") != null) {

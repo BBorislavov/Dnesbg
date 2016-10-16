@@ -76,16 +76,12 @@
 							<c:if test="${not  isAdmin}">
 								<c:if test="${not empty user}">
 									<c:if test="${favourites.get(listCategory.id)>0}">
-										<a class="addFavourite"
-											href="./RemoveFavourites?id=${listCategory.id}"> <i
-											style="color: red" class="fa fa-heart" aria-hidden="true"></i>
-										</a>
+										
+											<i style="color: red; cursor:pointer" data-id="${listCategory.id}"  class="fa fa-heart heart" aria-hidden="true"></i>
+										
 									</c:if>
 									<c:if test="${favourites.get(listCategory.id)==0}">
-										<a class="addFavourite"
-											href="./AddToFavourites?id=${listCategory.id}"> <i
-											style="color: red" class="fa fa-heart-o" aria-hidden="true"></i>
-										</a>
+											<i style="color: red; cursor:pointer" data-id="${listCategory.id}"  class="fa fa-heart-o heart" aria-hidden="true"></i>	
 									</c:if>
 								</c:if>
 							</c:if>
@@ -106,16 +102,19 @@
 				</ul>
 				<ul style="text-align: center;">
 				<c:if test="${param.page!=1}">
-					<a href="Category?name=${name}&page=${param.page-1}"><i
+					<a href="Category?name=${name}&page=${param.page-1}" style="margin-top:3px;"><i
 						class="fa fa-chevron-left fa-2x" aria-hidden="true"></i></a>
 				</c:if>
 				<c:forEach var="pages" items="${pages}">
-					<a style="font-size: 40px"
+					<a style="font-size: 20px;background: #89d2f0;color:white;margin-left:1px; padding:3px 5px 3px 5px; "
 						href="Category?name=${name}&page=${pages}"><span><i>${pages}</i></span></a>
+						
 				</c:forEach>
 				<c:if test="${param.page!= pages.size()}">
+					<c:if test="${pages.size()>1}">
 					<a href="Category?name=${name}&page=${param.page+1}"><i
 						class="fa fa-chevron-right fa-2x" aria-hidden="true"></i></a>
+					</c:if>
 				</c:if>
 				</ul>
 			</div>
@@ -154,7 +153,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-lg-4 col-md-4 col-sm-4">
+		<div class="col-lg-4 col-md-4 col-sm-4" style="float:right">
 			<aside class="right_content">
 			<div class="single_sidebar">
 				<h2>
@@ -196,10 +195,46 @@
 	<jsp:include page="user_panel/footer.jsp"></jsp:include>
 
 	<script type="text/javascript">
-		$('.deleteNews').click(function(e) {
-			if (!confirm('Are you sure you want to delete this news?')) {
-				e.preventDefault();
-			}
+		$(document).ready(function(){
+			
+		
 
+			$('.heart').click(function (e) {
+			
+				var id = $(this).data().id;
+				console.log(id)
+				if( $(this).attr('class').indexOf('fa fa-heart-o heart') !== -1){
+					$(this).attr('class', 'fa fa-heart heart' );
+					
+					$.ajax({
+                        url: "./AddToFavourites?id=" + id,
+                        method: 'GET',
+                
+                    });
+				}
+				else {
+					$(this).attr('class', 'fa fa-heart-o heart' );
+					$.ajax({
+                        url: "./RemoveFavourites?id=" + id,
+                        method: 'GET',
+                      
+                    });
+				}
+				
+				
+			});
+				
+			
+			
+			$('.deleteNews').click(function(e) {
+				if (!confirm('Are you sure you want to delete this news?')) {
+					e.preventDefault();
+				}
+
+			});
+		    
 		});
+	    
+	    
+		
 	</script>

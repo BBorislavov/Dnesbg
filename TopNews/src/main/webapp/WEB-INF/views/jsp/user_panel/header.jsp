@@ -17,6 +17,10 @@
 									<li><a href="Logout"><spring:message code="Logout" text="Logout" /></a></li>
 								</c:when>
 								<c:when test="${not empty sessionScope.user}">
+								
+									<li>
+										<span style="color:white">(${user.username})</span>
+									</li>
 									<li><a href="Logout"><spring:message code="Logout" text="Logout" /></a></li>
 								</c:when>
 								<c:otherwise>
