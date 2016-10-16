@@ -69,5 +69,4 @@ public class CommentDAO extends AbstractDAO {
 			throw new NewsException("Failed to show comments under news.", e);
 		}
 	}
-
 }

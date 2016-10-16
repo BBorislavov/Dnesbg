@@ -3,6 +3,7 @@ package com.topnews.modelsDAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import com.topnews.exceptions.CategoryException;
 import com.topnews.exceptions.ConnectionException;
 import com.topnews.exceptions.NewsException;
 import com.topnews.exceptions.UserException;
+import com.topnews.models.Category;
 
 public class CategoryDAO extends AbstractDAO {
 
@@ -21,6 +23,7 @@ public class CategoryDAO extends AbstractDAO {
 	private static final String GET_SUBCATEGORIES = "SELECT sub.name FROM news_db.categories c"
 			+ " LEFT OUTER JOIN (news_db.categories sub) ON (c.subcategory_id = sub.category_id)"
 			+ " WHERE c.name = ? ORDER BY sub.subcategory_id;";
+	private static final String GET_ALL_SUBCATEGORIES = "SELECT name FROM categories WHERE category_id IS NOT NULL;";
 	private static final String GET_MAIN_CATEGORIES = "SELECT name FROM news_db.categories WHERE category_id is null AND subcategory_id <> 1 ORDER BY subcategory_id;";
 	private static final String DELETE_CATEGORY = "DELETE FROM news_db.categories WHERE subcategory_id=?;";
 	private static final String INSERT_CATEGORY = "INSERT INTO news_db.categories VALUES (? , null , ?);";
@@ -82,7 +85,7 @@ public class CategoryDAO extends AbstractDAO {
 		}
 	}
 
-	public static Map<String, List<String>> AllCategories() throws ConnectionException, NewsException {
+	public static Map<String, List<String>> allCategories() throws ConnectionException, NewsException {
 		try {
 			PreparedStatement categoryStatement = connection.prepareStatement(GET_MAIN_CATEGORIES);
 			ResultSet resultSet = categoryStatement.executeQuery();
@@ -107,6 +110,23 @@ public class CategoryDAO extends AbstractDAO {
 			throw new NewsException("Failed to show categories.", e);
 		}
 	}
+	
+	public static List<String> showAllSubCategories() throws ConnectionException, NewsException {
+		try {
+			Statement categoryStatement = connection.createStatement();
+			ResultSet resultSet = categoryStatement.executeQuery(GET_ALL_SUBCATEGORIES);
+			List<String> subcategories = new ArrayList<String>();
+			while (resultSet.next()) {
+				String categoryName = resultSet.getString("name");
+				categoryName = categoryName.replaceAll(" ", "%20");
+				subcategories.add(categoryName);
+			}
+			return Collections.unmodifiableList(subcategories);
+		} catch (Exception e) {
+			throw new NewsException("Failed to show categories.", e);
+		}
+	}
+	
 
 	public static boolean isCategoryExists(String name) throws CategoryException {
 		PreparedStatement categoryIdStatement;
