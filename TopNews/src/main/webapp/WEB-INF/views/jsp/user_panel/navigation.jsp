@@ -46,7 +46,6 @@
 					<li><a href="Favourites?page=1"><spring:message code="Favourites" text="Favourites" /></a></li>
 				</c:when>
 			</c:choose>
-			<li><a href="Weather"><spring:message code="Weather" text="default text" /></a></li>	
 		</ul>
 	</div>
 	</nav> </section>

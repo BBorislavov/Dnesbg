@@ -34,15 +34,6 @@
 						<img class="img-center" src="${alert.photo}" alt="">
 						${alert.text}
 					</div>
-					<div class="social_link">
-						<ul class="sociallink_nav">
-							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-							<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-						</ul>
-					</div>
 				</div>
 			</div>
 		</div>

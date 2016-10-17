@@ -47,7 +47,7 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
 	
 	public static final String LOCATION = "D:\\news_images\\";
 	 
-    private static final long MAX_FILE_SIZE = 31457280; // 30MB
+    public static final long MAX_FILE_SIZE = 31457280; // 30MB
                                                         
     private static final long MAX_REQUEST_SIZE = 125829120; // 120MB
      

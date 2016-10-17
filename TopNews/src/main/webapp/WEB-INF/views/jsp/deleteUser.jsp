@@ -36,7 +36,7 @@
 	<jsp:include page="user_panel/footer.jsp"></jsp:include>
 	<script type="text/javascript">
 		$('.deleteUser').click(function(e) {
-			if (!confirm('Are you sure you want to delete this user?')) {
+			if (!confirm('<spring:message code="${submitDeleteUser}" text="Are you sure?" />')) {
 				e.preventDefault();
 			}
 

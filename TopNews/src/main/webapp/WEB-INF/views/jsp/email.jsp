@@ -42,14 +42,22 @@ function Validatebodypanelbumper(theForm)
 				</ul>
 				<div class="social_area">
 					<ul class="social_nav">
-						<li class="facebook"><a href="#"></a></li>
-						<li class="twitter"><a href="#"></a></li>
-						<li class="flickr"><a href="#"></a></li>
-						<li class="pinterest"><a href="#"></a></li>
-						<li class="googleplus"><a href="#"></a></li>
-						<li class="vimeo"><a href="#"></a></li>
-						<li class="youtube"><a href="#"></a></li>
-						<li class="mail"><a href="#"></a></li>
+						<li class="facebook"><a href="http://www.facebook.com"
+							target="_blank"></a></li>
+						<li class="twitter"><a href="https://twitter.com/"
+							target="_blank"></a></li>
+						<li class="flickr"><a href="https://www.flickr.com/"
+							target="_blank"></a></li>
+						<li class="pinterest"><a href="https://www.pinterest.com/"
+							target="_blank"></a></li>
+						<li class="googleplus"><a href="https://plus.google.com/"
+							target="_blank"></a></li>
+						<li class="vimeo"><a href="https://vimeo.com/"
+							target="_blank"></a></li>
+						<li class="youtube"><a href="https://www.youtube.com/"
+							target="_blank"></a></li>
+						<li class="mail"><a href="https://www.google.com/gmail/"
+							target="_blank"></a></li>
 					</ul>
 				</div>
 			</div>

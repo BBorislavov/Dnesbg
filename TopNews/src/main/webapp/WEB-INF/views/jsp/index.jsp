@@ -236,7 +236,7 @@
 		<div class="col-lg-4 col-md-4 col-sm-4">
 			<aside class="right_content">
 			<div class="single_sidebar">
-            <h2><span>Most commented news</span></h2>
+            <h2><span><spring:message code="mostCommentedNews" text="Most commented news" /></span></h2>
             <ul class="spost_nav">
              <c:forEach var="mostCommented" items="${mostCommented}">
                <li>
@@ -250,7 +250,7 @@
 			<div class="single_sidebar">
 				<div class="single_sidebar wow fadeInDown">
 					<h2>
-						<span>Sponsor</span>
+						<span><spring:message code="sponsor" text="Sponsor" /></span>
 					</h2>
 					<a class="sideAdd" href="http://ittalents.bg/"><img
 						src="images/logo-black.png" alt=""></a>

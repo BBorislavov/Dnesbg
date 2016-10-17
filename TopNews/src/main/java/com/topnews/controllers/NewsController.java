@@ -10,12 +10,16 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+import com.topnews.configure.SpringWebConfig;
+import com.topnews.configure.WebInitializer;
 import com.topnews.dataLoad.DataLoader;
 import com.topnews.exceptions.ConnectionException;
 import com.topnews.exceptions.NewsException;
@@ -29,6 +33,7 @@ import com.topnews.modelsDAO.UserDAO;
 
 @Controller
 public class NewsController {
+	private static final String INVALID_IMAGE_TYPE = "invalid";
 	private static final int NUMBER_OF_COMBINATIONS = 1000;
 	private static final int ANONYMOUS_USER = 4;
 	public static final String LOCATION = "D:\\news_images\\";
@@ -37,7 +42,7 @@ public class NewsController {
 
 	@RequestMapping(value = "/AddNews", method = RequestMethod.POST)
 	public String AddNews(@ModelAttribute News news, @RequestParam("photoUrl") MultipartFile multipartFile,
-			String category, Model model, HttpSession httpSession) {
+			String category, Model model, HttpSession httpSession, HttpServletRequest request) {
 		try {
 			if ((User) httpSession.getAttribute("user") != null) {
 				User user = (User) httpSession.getAttribute("user");
@@ -45,7 +50,6 @@ public class NewsController {
 					String photoUrl = SERVER_DEFAULT_IMAGE;
 					if (!multipartFile.isEmpty()) {
 						String[] path = multipartFile.getOriginalFilename().split(":\\\\");
-					
 						String fileName = path[path.length - 1];
 						String username = null;
 						if ((String) httpSession.getAttribute("username") != null) {
@@ -56,9 +60,52 @@ public class NewsController {
 						String location = LOCATION + username + "\\";
 						new File(location).mkdir();
 						int random = (new Random().nextInt() * NUMBER_OF_COMBINATIONS);
-						FileCopyUtils.copy(multipartFile.getBytes(), new File(location + random + fileName));
-						photoUrl = SERVER_IMAGES_PATH + username + "/" + random + fileName;
+						int pointIndex = 0;
+						String imageType = null;
+						if (multipartFile.getBytes().length <= WebInitializer.MAX_FILE_SIZE) {
+							for (int index = 0; index < fileName.length(); index++) {
+								if (fileName.charAt(index) == '.') {
+									index++;
+									pointIndex = index;
+									break;
+								}
+							}
+							String fileType = fileName.substring(pointIndex, fileName.length());
+
+							switch (fileType) {
+							case "jpg":
+								imageType = "jpg";
+								break;
+							case "jpeg":
+								imageType = "jpeg";
+								break;
+							case "png":
+								imageType = "png";
+								break;
+							case "gif":
+								imageType = "gif";
+								break;
+							case "bmp":
+								imageType = "bmp";
+								break;
+							default:
+								imageType = INVALID_IMAGE_TYPE;
+								break;
+							}
+
+						} else {
+							model.addAttribute("invalidImage", "tooLargeFile");
+							return "./Error";
+						}
+						if (!imageType.equals(INVALID_IMAGE_TYPE)) {
+							FileCopyUtils.copy(multipartFile.getBytes(), new File(location + random + fileName));
+							photoUrl = SERVER_IMAGES_PATH + username + "/" + random + fileName;
+						} else {
+							model.addAttribute("invalidImage", "invalidImage");
+							return "error-404";
+						}
 					}
+
 					if (news.getText().equals("Invalid text") || news.getTitle().equals("Invalid title")) {
 						model.addAttribute("error", "incorrectNews");
 						return "addNews";
@@ -68,6 +115,7 @@ public class NewsController {
 					model.addAttribute("message", "successNews");
 					DataLoader.LoadSiteData(httpSession, model);
 					return "addNews";
+
 				}
 				model.addAttribute("message", "notFoundPage");
 				return "forward:/Error";

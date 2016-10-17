@@ -49,6 +49,7 @@
             <h3><spring:message code="Sorry" text="We are sorry" /></h3>
             <h1>404</h1>
             <h3 style="color: red"><spring:message code="${message}" text="" /></h3><br>
+            <h3 style="color: red"><spring:message code="${invalidImage}" text="${invalidImage}" /></h3><br>
             <span></span> <a href="./" class="wow fadeInLeftBig"><spring:message code="Homepage" text="Go to homepage" /></a> </div>
         </div>
       </div>

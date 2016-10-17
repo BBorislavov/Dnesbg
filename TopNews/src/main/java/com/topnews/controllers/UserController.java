@@ -65,13 +65,17 @@ public class UserController {
 			}
 
 		} catch (ConnectionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
 		} catch (NewsException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("message", "serverMaintenance");
+			return "forward:/Error";
 		}
 
 	}
@@ -100,7 +104,7 @@ public class UserController {
 			return "forward:/Error";
 		}
 	}
-	
+
 	@RequestMapping(value = "/RemoveFavourites", method = RequestMethod.GET)
 	public String removeFromFavourites(Model model, HttpSession httpSession, HttpServletRequest request) {
 		try {

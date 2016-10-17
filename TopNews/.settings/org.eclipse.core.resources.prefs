@@ -5,7 +5,6 @@ encoding//src/main/resources/messages_en.properties=UTF-8
 encoding//src/main/webapp/WEB-INF/views/jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/jsp/login.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/jsp/user_panel/footer.jsp=UTF-8
-encoding//src/main/webapp/WEB-INF/views/jsp/weather.jsp=UTF-8
 encoding//src/test/java=UTF-8
 encoding/<project>=UTF-8
 separateDerivedEncodings=true

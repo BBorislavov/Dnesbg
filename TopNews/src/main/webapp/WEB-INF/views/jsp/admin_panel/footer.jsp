@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="col-lg-4 col-md-4 col-sm-4">
 				<div class="footer_widget wow fadeInLeftBig">
-					<h2>WELCOME</h2>
+					<h2><spring:message code="WelcomeText" text="defsault text" /></h2>
 					<p>You are just logged as administrator</p>
 				</div>
 			</div>

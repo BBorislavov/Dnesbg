@@ -1,5 +1,6 @@
 package com.topnews.controllers;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -11,7 +12,7 @@ import com.topnews.dataLoad.DataLoader;
 
 @Controller
 public class ErrorController {
-	
+
 	@RequestMapping(value = "/*", method = RequestMethod.GET)
 	public String home(Model model, HttpSession httpSession) {
 		try {
@@ -22,18 +23,21 @@ public class ErrorController {
 			e.printStackTrace();
 			return "redirect:/";
 		}
-		
+
 	}
 
 	@RequestMapping(value = "/Error", method = RequestMethod.GET)
-	public String error(Model model, HttpSession httpSession) {
+	public String error(Model model, HttpSession httpSession, HttpServletRequest request) {
 		try {
 			DataLoader.LoadSiteData(httpSession, model);
-			model.addAttribute("message", "notFoundPage");
+			if (request.getParameter("message")!=null) {
+				model.addAttribute("message", "notFoundPage");
+			}
 			return "error-404";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "redirect:/";		}
+			return "redirect:/";
+		}
 
 	}
 }
