@@ -24,7 +24,7 @@
 						<h3 style="color: red">${message}</h3>
 						<form:form action="DeleteNews?id=${id}" class="contact_form"
 							commandName="news">
-							<input type="submit" value="Delete from Site">
+							<input type="submit" value="<spring:message code="${deleteFromSite}" text="Are you sure?" />">
 						</form:form>
 					</div>
 				</div>

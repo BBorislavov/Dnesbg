@@ -67,7 +67,7 @@
 
 	<script type="text/javascript">
 		$('.removeFromFavourites').click(function(e) {
-			if (!confirm('Are you sure you want to remove this news from favourites?')) {
+			if (!confirm('<spring:message code="submitRemoveFavourites" text="Are you sure?" />')) {
 				e.preventDefault();
 			}
 

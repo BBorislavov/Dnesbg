@@ -64,7 +64,7 @@
 					</ol>
 					<h1>${news.title}</h1>
 					<div class="post_commentbox">
-						<a><i class="fa fa-user"></i>IT Talents team</a> <span><i
+						<a><i class="fa fa-user"></i><spring:message code="${itTalentsTeam}" text="IT Talents Team" /></a> <span><i
 							class="fa fa-calendar"></i>${news.dateOfPost}</span> <a href="Category?name=${category}&page=1"><i
 							class="fa fa-tags"></i>${category}</a> <a><i
 							class="fa fa-eye"></i>${news.rating+1}</a>
@@ -172,7 +172,7 @@
 			                    function(event) {
 
 			                        event.preventDefault();
-			                        if (confirm('Are you sure you want to delete this comment ?')) {
+			                        if (confirm('<spring:message code="submitDeleteComment" text="Are you sure to delete?" />')) {
 			                            $
 			                                .ajax({
 			                                    url: './' +
